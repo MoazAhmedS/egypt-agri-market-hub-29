@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +32,7 @@ const mockProduct = {
 const ProductDetails = () => {
   const { id } = useParams();
   const { language, t } = useLanguage();
+  const navigate = useNavigate();
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [engineerInspection, setEngineerInspection] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -40,13 +42,17 @@ const ProductDetails = () => {
   const totalPrice = (product.price * selectedQuantity) + (engineerInspection ? inspectionFee : 0);
 
   const handlePurchase = () => {
-    console.log("Purchase:", {
-      productId: id,
+    const productData = {
+      name: product.name,
+      nameEn: product.nameEn,
+      price: product.price,
       quantity: selectedQuantity,
-      engineerInspection,
-      totalPrice
+      inspectionFee: engineerInspection ? inspectionFee : 0
+    };
+    
+    navigate('/checkout', { 
+      state: { product: productData } 
     });
-    // Handle purchase logic here
   };
 
   return (

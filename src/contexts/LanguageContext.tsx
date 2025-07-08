@@ -16,6 +16,7 @@ const translations = {
     about: 'من نحن',
     login: 'تسجيل الدخول',
     signup: 'إنشاء حساب',
+    logout: 'تسجيل الخروج',
     
     // Browse page
     searchPlaceholder: 'ابحث عن المنتجات...',
@@ -170,6 +171,33 @@ const translations = {
     shipped: 'مشحون',
     delivered: 'تم التوصيل',
     
+    // Payment Process
+    orderInformation: 'معلومات الطلب',
+    deliveryAddress: 'عنوان التوصيل',
+    paymentMethod: 'طريقة الدفع',
+    orderConfirmation: 'تأكيد الطلب',
+    fullName: 'الاسم الكامل',
+    phoneNumber: 'رقم الهاتف',
+    address: 'العنوان',
+    city: 'المدينة',
+    postalCode: 'الرمز البريدي',
+    creditCard: 'بطاقة ائتمان',
+    cashOnDelivery: 'الدفع عند الاستلام',
+    cardNumber: 'رقم البطاقة',
+    expiryDate: 'تاريخ الانتهاء',
+    cvv: 'الرمز الأمني',
+    cardholderName: 'اسم حامل البطاقة',
+    subtotal: 'المجموع الفرعي',
+    deliveryFee: 'رسوم التوصيل',
+    confirmOrder: 'تأكيد الطلب',
+    orderPlaced: 'تم تقديم الطلب',
+    orderNumber: 'رقم الطلب',
+    estimatedDelivery: 'التسليم المتوقع',
+    orderConfirmed: 'تم تأكيد طلبك',
+    orderConfirmedMessage: 'شكراً لك! تم تأكيد طلبك وسيتم تحضيره قريباً.',
+    backToHome: 'العودة للرئيسية',
+    continueShopping: 'متابعة التسوق',
+    
     // Common
     search: 'بحث',
     filter: 'تصفية',
@@ -187,6 +215,7 @@ const translations = {
     about: 'About Us',
     login: 'Login',
     signup: 'Sign Up',
+    logout: 'Logout',
     
     // Browse page
     searchPlaceholder: 'Search for products...',
@@ -340,6 +369,33 @@ const translations = {
     pending: 'Pending',
     shipped: 'Shipped',
     delivered: 'Delivered',
+    
+    // Payment Process
+    orderInformation: 'Order Information',
+    deliveryAddress: 'Delivery Address',
+    paymentMethod: 'Payment Method',
+    orderConfirmation: 'Order Confirmation',
+    fullName: 'Full Name',
+    phoneNumber: 'Phone Number',
+    address: 'Address',
+    city: 'City',
+    postalCode: 'Postal Code',
+    creditCard: 'Credit Card',
+    cashOnDelivery: 'Cash on Delivery',
+    cardNumber: 'Card Number',
+    expiryDate: 'Expiry Date',
+    cvv: 'CVV',
+    cardholderName: 'Cardholder Name',
+    subtotal: 'Subtotal',
+    deliveryFee: 'Delivery Fee',
+    confirmOrder: 'Confirm Order',
+    orderPlaced: 'Order Placed',
+    orderNumber: 'Order Number',
+    estimatedDelivery: 'Estimated Delivery',
+    orderConfirmed: 'Your order has been confirmed',
+    orderConfirmedMessage: 'Thank you! Your order has been confirmed and will be prepared shortly.',
+    backToHome: 'Back to Home',
+    continueShopping: 'Continue Shopping',
     
     // Common
     search: 'Search',
