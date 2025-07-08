@@ -14,6 +14,7 @@ import SignupDocuments from "./pages/auth/SignupDocuments";
 import BrowseProducts from "./pages/BrowseProducts";
 import About from "./pages/About";
 import ProductDetails from "./pages/ProductDetails";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
