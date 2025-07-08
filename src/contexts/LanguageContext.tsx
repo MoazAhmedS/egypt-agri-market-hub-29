@@ -69,6 +69,51 @@ const translations = {
     totalPrice: 'إجمالي السعر',
     orderSummary: 'ملخص الطلب',
     
+    // Dashboard
+    dashboard: 'لوحة التحكم',
+    adminDashboard: 'لوحة تحكم المدير',
+    farmerDashboard: 'لوحة تحكم المزارع',
+    buyerDashboard: 'لوحة تحكم المشتري',
+    
+    // Farmer Dashboard
+    cropManagement: 'إدارة المحاصيل',
+    addCrop: 'إضافة محصول',
+    closeCrop: 'إغلاق المحصول',
+    orderTracking: 'تتبع الطلبات',
+    pendingOrders: 'الطلبات المعلقة',
+    uploadImages: 'رفع الصور',
+    markAsShipped: 'تسمية كمشحون',
+    profileManagement: 'إدارة الملف الشخصي',
+    salesAnalytics: 'تحليل المبيعات',
+    subscription: 'الاشتراك',
+    subscriptionPlan: 'خطة الاشتراك',
+    subscribed: 'مشترك',
+    notSubscribed: 'غير مشترك',
+    subscribe: 'اشترك الآن',
+    manageSubscription: 'إدارة الاشتراك',
+    premiumPlan: 'الخطة المميزة',
+    monthlyPlan: 'شهرياً',
+    unlimited: 'غير محدود',
+    support: 'الدعم',
+    
+    // Form fields
+    cropName: 'اسم المحصول',
+    category: 'الفئة',
+    price: 'السعر',
+    description: 'الوصف',
+    save: 'حفظ',
+    cancel: 'إلغاء',
+    close: 'إغلاق',
+    update: 'تحديث',
+    delete: 'حذف',
+    
+    // Status
+    active: 'نشط',
+    closed: 'مغلق',
+    pending: 'معلق',
+    shipped: 'مشحون',
+    delivered: 'تم التوصيل',
+    
     // Common
     search: 'بحث',
     filter: 'تصفية',
@@ -137,6 +182,51 @@ const translations = {
     inspectionFee: 'Inspection Fee',
     totalPrice: 'Total Price',
     orderSummary: 'Order Summary',
+    
+    // Dashboard
+    dashboard: 'Dashboard',
+    adminDashboard: 'Admin Dashboard',
+    farmerDashboard: 'Farmer Dashboard',
+    buyerDashboard: 'Buyer Dashboard',
+    
+    // Farmer Dashboard
+    cropManagement: 'Crop Management',
+    addCrop: 'Add Crop',
+    closeCrop: 'Close Crop',
+    orderTracking: 'Order Tracking',
+    pendingOrders: 'Pending Orders',
+    uploadImages: 'Upload Images',
+    markAsShipped: 'Mark as Shipped',
+    profileManagement: 'Profile Management',
+    salesAnalytics: 'Sales Analytics',
+    subscription: 'Subscription',
+    subscriptionPlan: 'Subscription Plan',
+    subscribed: 'Subscribed',
+    notSubscribed: 'Not Subscribed',
+    subscribe: 'Subscribe Now',
+    manageSubscription: 'Manage Subscription',
+    premiumPlan: 'Premium Plan',
+    monthlyPlan: 'Monthly',
+    unlimited: 'Unlimited',
+    support: 'Support',
+    
+    // Form fields
+    cropName: 'Crop Name',
+    category: 'Category',
+    price: 'Price',
+    description: 'Description',
+    save: 'Save',
+    cancel: 'Cancel',
+    close: 'Close',
+    update: 'Update',
+    delete: 'Delete',
+    
+    // Status
+    active: 'Active',
+    closed: 'Closed',
+    pending: 'Pending',
+    shipped: 'Shipped',
+    delivered: 'Delivered',
     
     // Common
     search: 'Search',

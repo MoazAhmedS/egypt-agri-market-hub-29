@@ -1,5 +1,6 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface RoleSelectorProps {
   selectedRole: string;
@@ -7,6 +8,8 @@ interface RoleSelectorProps {
 }
 
 const RoleSelector = ({ selectedRole, onRoleChange }: RoleSelectorProps) => {
+  const { t } = useLanguage();
+
   return (
     <div className="w-48">
       <Select value={selectedRole} onValueChange={onRoleChange}>
@@ -14,9 +17,9 @@ const RoleSelector = ({ selectedRole, onRoleChange }: RoleSelectorProps) => {
           <SelectValue placeholder="Select Role" />
         </SelectTrigger>
         <SelectContent className="bg-white border border-gray-300 shadow-lg z-50">
-          <SelectItem value="admin">Admin Dashboard</SelectItem>
-          <SelectItem value="farmer">Farmer Dashboard</SelectItem>
-          <SelectItem value="buyer">Buyer Dashboard</SelectItem>
+          <SelectItem value="admin">{t('adminDashboard')}</SelectItem>
+          <SelectItem value="farmer">{t('farmerDashboard')}</SelectItem>
+          <SelectItem value="buyer">{t('buyerDashboard')}</SelectItem>
         </SelectContent>
       </Select>
     </div>

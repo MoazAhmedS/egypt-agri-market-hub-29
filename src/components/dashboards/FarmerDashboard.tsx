@@ -1,24 +1,380 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Package, TrendingUp, User, CreditCard, Eye, Upload, CheckCircle, X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useToast } from "@/hooks/use-toast";
+import AddCropModal from "@/components/modals/AddCropModal";
+import ShipOrderModal from "@/components/modals/ShipOrderModal";
+import ProfileModal from "@/components/modals/ProfileModal";
+import { Link } from "react-router-dom";
+
+interface Crop {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+  quantity: string;
+  status: 'active' | 'closed';
+  createdAt: string;
+}
+
+interface Order {
+  id: number;
+  cropName: string;
+  buyer: string;
+  quantity: string;
+  amount: number;
+  status: 'pending' | 'shipped' | 'delivered';
+  orderDate: string;
+}
 
 const FarmerDashboard = () => {
+  const { t } = useLanguage();
+  const { toast } = useToast();
+  
+  // Modal states
+  const [isAddCropModalOpen, setIsAddCropModalOpen] = useState(false);
+  const [isShipOrderModalOpen, setIsShipOrderModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  
+  // Subscription state (mock data)
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  
+  // Mock data
+  const [crops, setCrops] = useState<Crop[]>([
+    { id: 1, name: "Tomatoes", category: "Vegetables", price: 15, quantity: "500 kg", status: "active", createdAt: "2024-01-15" },
+    { id: 2, name: "Oranges", category: "Fruits", price: 12, quantity: "300 kg", status: "active", createdAt: "2024-01-10" },
+    { id: 3, name: "Wheat", category: "Grains", price: 8, quantity: "1000 kg", status: "closed", createdAt: "2024-01-05" },
+  ]);
+
+  const [orders, setOrders] = useState<Order[]>([
+    { id: 1, cropName: "Tomatoes", buyer: "Ahmed Store", quantity: "100 kg", amount: 1500, status: "pending", orderDate: "2024-01-20" },
+    { id: 2, cropName: "Oranges", buyer: "Fresh Market", quantity: "50 kg", amount: 600, status: "shipped", orderDate: "2024-01-18" },
+    { id: 3, cropName: "Wheat", buyer: "Bakery Co.", quantity: "200 kg", amount: 1600, status: "delivered", orderDate: "2024-01-15" },
+  ]);
+
+  const handleAddCrop = (cropData: any) => {
+    const newCrop: Crop = {
+      id: crops.length + 1,
+      name: cropData.name,
+      category: cropData.category,
+      price: cropData.price,
+      quantity: cropData.quantity,
+      status: 'active',
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+    setCrops([...crops, newCrop]);
+    toast({
+      title: "Crop Added",
+      description: `${cropData.name} has been added successfully.`,
+    });
+  };
+
+  const handleCloseCrop = (cropId: number) => {
+    setCrops(crops.map(crop => 
+      crop.id === cropId ? { ...crop, status: 'closed' as const } : crop
+    ));
+    toast({
+      title: "Crop Closed",
+      description: "Crop has been closed successfully.",
+    });
+  };
+
+  const handleShipOrder = (orderId: number) => {
+    setOrders(orders.map(order => 
+      order.id === orderId ? { ...order, status: 'shipped' as const } : order
+    ));
+    toast({
+      title: "Order Shipped",
+      description: "Order has been marked as shipped successfully.",
+    });
+  };
+
+  const openShipModal = (order: Order) => {
+    setSelectedOrder(order);
+    setIsShipOrderModalOpen(true);
+  };
+
+  // Analytics data
+  const totalSales = orders.filter(o => o.status === 'delivered').reduce((sum, o) => sum + o.amount, 0);
+  const totalOrders = orders.length;
+  const pendingOrders = orders.filter(o => o.status === 'pending').length;
+  const activeCrops = crops.filter(c => c.status === 'active').length;
+
   return (
     <div className="space-y-6">
+      {/* Subscription Status */}
       <Card>
         <CardHeader>
-          <CardTitle>Farmer Dashboard</CardTitle>
-          <CardDescription>Coming soon - Manage your crops and orders</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" />
+                {t('subscription')}
+              </CardTitle>
+              <CardDescription>
+                {isSubscribed ? t('subscribed') : t('notSubscribed')}
+              </CardDescription>
+            </div>
+            <Badge variant={isSubscribed ? "default" : "secondary"}>
+              {isSubscribed ? t('premiumPlan') : t('notSubscribed')}
+            </Badge>
+          </div>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600">This dashboard will include:</p>
-          <ul className="list-disc list-inside mt-2 space-y-1 text-gray-600">
-            <li>Crop management</li>
-            <li>Order tracking</li>
-            <li>Sales analytics</li>
-            <li>Profile management</li>
-          </ul>
+          {!isSubscribed ? (
+            <div className="space-y-4">
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold mb-2">{t('premiumPlan')}</h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  • {t('unlimited')} crop listings
+                </p>
+                <p className="text-sm text-gray-600 mb-2">
+                  • Advanced analytics
+                </p>
+                <p className="text-sm text-gray-600 mb-4">
+                  • Priority {t('support')}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl font-bold">$29/{t('monthlyPlan')}</span>
+                  <Link to="/payment">
+                    <Button>{t('subscribe')}</Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-green-600">You have access to all premium features</p>
+              <Button variant="outline">{t('manageSubscription')}</Button>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      {/* Analytics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{t('currency')} {totalSales}</div>
+            <p className="text-xs text-muted-foreground">Last 30 days</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalOrders}</div>
+            <p className="text-xs text-muted-foreground">All time</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{t('pendingOrders')}</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{pendingOrders}</div>
+            <p className="text-xs text-muted-foreground">Awaiting action</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Crops</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activeCrops}</div>
+            <p className="text-xs text-muted-foreground">Currently listed</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Crop Management */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('cropManagement')}</CardTitle>
+              <CardDescription>Manage your crop listings</CardDescription>
+            </div>
+            <Button onClick={() => setIsAddCropModalOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              {t('addCrop')}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t('cropName')}</TableHead>
+                <TableHead>{t('category')}</TableHead>
+                <TableHead>{t('price')}</TableHead>
+                <TableHead>{t('quantity')}</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {crops.map((crop) => (
+                <TableRow key={crop.id}>
+                  <TableCell className="font-medium">{crop.name}</TableCell>
+                  <TableCell>{crop.category}</TableCell>
+                  <TableCell>{t('currency')} {crop.price}</TableCell>
+                  <TableCell>{crop.quantity}</TableCell>
+                  <TableCell>
+                    <Badge variant={crop.status === 'active' ? 'default' : 'secondary'}>
+                      {t(crop.status)}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {crop.status === 'active' && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleCloseCrop(crop.id)}
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        {t('closeCrop')}
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Order Tracking */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('orderTracking')}</CardTitle>
+          <CardDescription>Track and manage your orders</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Crop</TableHead>
+                <TableHead>Buyer</TableHead>
+                <TableHead>{t('quantity')}</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell>#{order.id}</TableCell>
+                  <TableCell className="font-medium">{order.cropName}</TableCell>
+                  <TableCell>{order.buyer}</TableCell>
+                  <TableCell>{order.quantity}</TableCell>
+                  <TableCell>{t('currency')} {order.amount}</TableCell>
+                  <TableCell>
+                    <Badge variant={
+                      order.status === 'delivered' ? 'default' : 
+                      order.status === 'shipped' ? 'secondary' : 'outline'
+                    }>
+                      {t(order.status)}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {order.status === 'pending' && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => openShipModal(order)}
+                      >
+                        <Upload className="h-4 w-4 mr-1" />
+                        {t('markAsShipped')}
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Profile Management */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>{t('profileManagement')}</CardTitle>
+              <CardDescription>Manage your profile information</CardDescription>
+            </div>
+            <Button onClick={() => setIsProfileModalOpen(true)}>
+              <User className="h-4 w-4 mr-2" />
+              {t('update')} Profile
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Name</label>
+              <p className="text-lg">Mohamed Hassan</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <p className="text-lg">mohamed@example.com</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium">{t('location')}</label>
+              <p className="text-lg">Giza, Egypt</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Phone</label>
+              <p className="text-lg">+20 123 456 789</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Modals */}
+      <AddCropModal
+        isOpen={isAddCropModalOpen}
+        onClose={() => setIsAddCropModalOpen(false)}
+        onAddCrop={handleAddCrop}
+      />
+
+      <ShipOrderModal
+        order={selectedOrder}
+        isOpen={isShipOrderModalOpen}
+        onClose={() => setIsShipOrderModalOpen(false)}
+        onShipOrder={handleShipOrder}
+      />
+
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onUpdateProfile={() => {
+          toast({
+            title: "Profile Updated",
+            description: "Your profile has been updated successfully.",
+          });
+        }}
+      />
     </div>
   );
 };

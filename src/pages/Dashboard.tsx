@@ -5,9 +5,11 @@ import RoleSelector from "@/components/RoleSelector";
 import AdminDashboard from "@/components/dashboards/AdminDashboard";
 import FarmerDashboard from "@/components/dashboards/FarmerDashboard";
 import BuyerDashboard from "@/components/dashboards/BuyerDashboard";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Dashboard = () => {
   const [selectedRole, setSelectedRole] = useState<string>("admin");
+  const { t } = useLanguage();
 
   const renderDashboard = () => {
     switch (selectedRole) {
@@ -22,6 +24,19 @@ const Dashboard = () => {
     }
   };
 
+  const getDescription = () => {
+    switch (selectedRole) {
+      case "admin":
+        return "Manage users, crops, and orders";
+      case "farmer":
+        return t('cropManagement') + " & " + t('orderTracking');
+      case "buyer":
+        return "Browse crops and manage your orders";
+      default:
+        return "Manage users, crops, and orders";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -29,13 +44,11 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">
           <div className="flex items-center gap-4 mb-4">
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('dashboard')}</h1>
             <RoleSelector selectedRole={selectedRole} onRoleChange={setSelectedRole} />
           </div>
           <p className="text-gray-600">
-            {selectedRole === "admin" && "Manage users, crops, and orders"}
-            {selectedRole === "farmer" && "Manage your crops and orders"}
-            {selectedRole === "buyer" && "Browse crops and manage your orders"}
+            {getDescription()}
           </p>
         </div>
 
