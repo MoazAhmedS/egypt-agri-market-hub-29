@@ -18,28 +18,38 @@ import {
   Trash2,
   DollarSign
 } from "lucide-react";
+import UserReviewModal from "@/components/modals/UserReviewModal";
+import UserUpdateModal from "@/components/modals/UserUpdateModal";
+import CropReviewModal from "@/components/modals/CropReviewModal";
+import OrderReviewModal from "@/components/modals/OrderReviewModal";
 
 const AdminDashboard = () => {
+  // Modal states
+  const [userReviewModal, setUserReviewModal] = useState<{ isOpen: boolean; user: any }>({ isOpen: false, user: null });
+  const [userUpdateModal, setUserUpdateModal] = useState<{ isOpen: boolean; user: any }>({ isOpen: false, user: null });
+  const [cropReviewModal, setCropReviewModal] = useState<{ isOpen: boolean; crop: any }>({ isOpen: false, crop: null });
+  const [orderReviewModal, setOrderReviewModal] = useState<{ isOpen: boolean; order: any }>({ isOpen: false, order: null });
+
   // Mock data - in real app this would come from API
-  const [pendingUsers] = useState([
+  const [pendingUsers, setPendingUsers] = useState([
     { id: 1, name: "Ahmed Hassan", email: "ahmed@example.com", role: "Farmer", status: "pending", documents: 3 },
     { id: 2, name: "Sara Mohamed", email: "sara@example.com", role: "Buyer", status: "pending", documents: 2 },
     { id: 3, name: "Omar Ali", email: "omar@example.com", role: "Farmer", status: "pending", documents: 4 },
   ]);
 
-  const [users] = useState([
+  const [users, setUsers] = useState([
     { id: 1, name: "Mohamed Ibrahim", email: "mohamed@example.com", role: "Farmer", status: "active", joinDate: "2024-01-15" },
     { id: 2, name: "Fatma Ahmed", email: "fatma@example.com", role: "Buyer", status: "active", joinDate: "2024-02-10" },
     { id: 3, name: "Khaled Salem", email: "khaled@example.com", role: "Farmer", status: "banned", joinDate: "2024-01-20" },
   ]);
 
-  const [pendingCrops] = useState([
+  const [pendingCrops, setPendingCrops] = useState([
     { id: 1, name: "Organic Tomatoes", farmer: "Ahmed Hassan", category: "Vegetables", price: 50, quantity: "100 kg", status: "pending" },
     { id: 2, name: "Fresh Apples", farmer: "Omar Ali", category: "Fruits", price: 80, quantity: "200 kg", status: "pending" },
     { id: 3, name: "Wheat Grains", farmer: "Mohamed Ibrahim", category: "Grains", price: 120, quantity: "500 kg", status: "pending" },
   ]);
 
-  const [onHoldOrders] = useState([
+  const [onHoldOrders, setOnHoldOrders] = useState([
     { 
       id: 1, 
       orderNumber: "ORD-2024-001", 
@@ -72,19 +82,49 @@ const AdminDashboard = () => {
     activeFarmers: 28
   };
 
-  const handleUserAction = (userId: number, action: string) => {
-    console.log(`${action} user ${userId}`);
-    // Handle user actions here
+  // Handler functions
+  const handleUserApprove = (userId: number) => {
+    setPendingUsers(prev => prev.filter(user => user.id !== userId));
+    console.log(`Approved user ${userId}`);
   };
 
-  const handleCropAction = (cropId: number, action: string) => {
-    console.log(`${action} crop ${cropId}`);
-    // Handle crop actions here
+  const handleUserReject = (userId: number) => {
+    setPendingUsers(prev => prev.filter(user => user.id !== userId));
+    console.log(`Rejected user ${userId}`);
   };
 
-  const handleOrderAction = (orderId: number, action: string) => {
-    console.log(`${action} order ${orderId}`);
-    // Handle order actions here
+  const handleUserUpdate = (userId: number, updates: any) => {
+    setUsers(prev => prev.map(user => 
+      user.id === userId ? { ...user, ...updates } : user
+    ));
+    console.log(`Updated user ${userId}`, updates);
+  };
+
+  const handleUserBan = (userId: number) => {
+    setUsers(prev => prev.map(user => 
+      user.id === userId ? { ...user, status: 'banned' } : user
+    ));
+    console.log(`Banned user ${userId}`);
+  };
+
+  const handleUserDelete = (userId: number) => {
+    setUsers(prev => prev.filter(user => user.id !== userId));
+    console.log(`Deleted user ${userId}`);
+  };
+
+  const handleCropAccept = (cropId: number) => {
+    setPendingCrops(prev => prev.filter(crop => crop.id !== cropId));
+    console.log(`Accepted crop ${cropId}`);
+  };
+
+  const handleCropReject = (cropId: number) => {
+    setPendingCrops(prev => prev.filter(crop => crop.id !== cropId));
+    console.log(`Rejected crop ${cropId}`);
+  };
+
+  const handlePaymentRelease = (orderId: number) => {
+    setOnHoldOrders(prev => prev.filter(order => order.id !== orderId));
+    console.log(`Released payment for order ${orderId}`);
   };
 
   return (
@@ -171,15 +211,27 @@ const AdminDashboard = () => {
                       </TableCell>
                       <TableCell>{user.documents} files</TableCell>
                       <TableCell className="space-x-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setUserReviewModal({ isOpen: true, user })}
+                        >
                           <Eye className="h-4 w-4 mr-1" />
                           Review
                         </Button>
-                        <Button size="sm" variant="default" onClick={() => handleUserAction(user.id, 'approve')}>
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={() => handleUserApprove(user.id)}
+                        >
                           <CheckCircle className="h-4 w-4 mr-1" />
                           Approve
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => handleUserAction(user.id, 'reject')}>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => handleUserReject(user.id)}
+                        >
                           <XCircle className="h-4 w-4 mr-1" />
                           Reject
                         </Button>
@@ -225,13 +277,25 @@ const AdminDashboard = () => {
                       </TableCell>
                       <TableCell>{user.joinDate}</TableCell>
                       <TableCell className="space-x-2">
-                        <Button size="sm" variant="outline" onClick={() => handleUserAction(user.id, 'edit')}>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => setUserUpdateModal({ isOpen: true, user })}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => handleUserAction(user.id, 'ban')}>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => handleUserBan(user.id)}
+                        >
                           <Ban className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => handleUserAction(user.id, 'delete')}>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => handleUserDelete(user.id)}
+                        >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </TableCell>
@@ -272,15 +336,27 @@ const AdminDashboard = () => {
                       <TableCell>{crop.price}</TableCell>
                       <TableCell>{crop.quantity}</TableCell>
                       <TableCell className="space-x-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setCropReviewModal({ isOpen: true, crop })}
+                        >
                           <Eye className="h-4 w-4 mr-1" />
                           View
                         </Button>
-                        <Button size="sm" variant="default" onClick={() => handleCropAction(crop.id, 'accept')}>
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={() => handleCropAccept(crop.id)}
+                        >
                           <CheckCircle className="h-4 w-4 mr-1" />
                           Accept
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => handleCropAction(crop.id, 'reject')}>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => handleCropReject(crop.id)}
+                        >
                           <XCircle className="h-4 w-4 mr-1" />
                           Reject
                         </Button>
@@ -327,11 +403,19 @@ const AdminDashboard = () => {
                         </div>
                       </TableCell>
                       <TableCell className="space-x-2">
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setOrderReviewModal({ isOpen: true, order })}
+                        >
                           <Eye className="h-4 w-4 mr-1" />
                           Review
                         </Button>
-                        <Button size="sm" variant="default" onClick={() => handleOrderAction(order.id, 'release')}>
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={() => handlePaymentRelease(order.id)}
+                        >
                           <DollarSign className="h-4 w-4 mr-1" />
                           Release Payment
                         </Button>
@@ -344,6 +428,39 @@ const AdminDashboard = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Modals */}
+      <UserReviewModal
+        user={userReviewModal.user}
+        isOpen={userReviewModal.isOpen}
+        onClose={() => setUserReviewModal({ isOpen: false, user: null })}
+        onApprove={handleUserApprove}
+        onReject={handleUserReject}
+      />
+
+      <UserUpdateModal
+        user={userUpdateModal.user}
+        isOpen={userUpdateModal.isOpen}
+        onClose={() => setUserUpdateModal({ isOpen: false, user: null })}
+        onUpdate={handleUserUpdate}
+        onBan={handleUserBan}
+        onDelete={handleUserDelete}
+      />
+
+      <CropReviewModal
+        crop={cropReviewModal.crop}
+        isOpen={cropReviewModal.isOpen}
+        onClose={() => setCropReviewModal({ isOpen: false, crop: null })}
+        onAccept={handleCropAccept}
+        onReject={handleCropReject}
+      />
+
+      <OrderReviewModal
+        order={orderReviewModal.order}
+        isOpen={orderReviewModal.isOpen}
+        onClose={() => setOrderReviewModal({ isOpen: false, order: null })}
+        onReleasePayment={handlePaymentRelease}
+      />
     </div>
   );
 };
