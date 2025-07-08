@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Package, TrendingUp, User, CreditCard, Eye, Upload, CheckCircle, X } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Package, TrendingUp, User, CreditCard, Upload, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import AddCropModal from "@/components/modals/AddCropModal";
@@ -108,248 +109,264 @@ const FarmerDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Subscription Status */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
-                {t('subscription')}
-              </CardTitle>
-              <CardDescription>
-                {isSubscribed ? t('subscribed') : t('notSubscribed')}
-              </CardDescription>
-            </div>
-            <Badge variant={isSubscribed ? "default" : "secondary"}>
-              {isSubscribed ? t('premiumPlan') : t('notSubscribed')}
-            </Badge>
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="overview">{t('salesAnalytics')}</TabsTrigger>
+          <TabsTrigger value="crops">{t('cropManagement')}</TabsTrigger>
+          <TabsTrigger value="orders">{t('orderTracking')}</TabsTrigger>
+          <TabsTrigger value="profile">{t('profileManagement')}</TabsTrigger>
+          <TabsTrigger value="subscription">{t('subscription')}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-4">
+          {/* Analytics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{t('currency')} {totalSales}</div>
+                <p className="text-xs text-muted-foreground">Last 30 days</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{totalOrders}</div>
+                <p className="text-xs text-muted-foreground">All time</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{t('pendingOrders')}</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{pendingOrders}</div>
+                <p className="text-xs text-muted-foreground">Awaiting action</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Crops</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{activeCrops}</div>
+                <p className="text-xs text-muted-foreground">Currently listed</p>
+              </CardContent>
+            </Card>
           </div>
-        </CardHeader>
-        <CardContent>
-          {!isSubscribed ? (
-            <div className="space-y-4">
-              <div className="p-4 border rounded-lg">
-                <h3 className="font-semibold mb-2">{t('premiumPlan')}</h3>
-                <p className="text-sm text-gray-600 mb-2">
-                  • {t('unlimited')} crop listings
-                </p>
-                <p className="text-sm text-gray-600 mb-2">
-                  • Advanced analytics
-                </p>
-                <p className="text-sm text-gray-600 mb-4">
-                  • Priority {t('support')}
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold">$29/{t('monthlyPlan')}</span>
-                  <Link to="/payment">
-                    <Button>{t('subscribe')}</Button>
-                  </Link>
+        </TabsContent>
+
+        <TabsContent value="crops" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>{t('cropManagement')}</CardTitle>
+                  <CardDescription>Manage your crop listings</CardDescription>
+                </div>
+                <Button onClick={() => setIsAddCropModalOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t('addCrop')}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('cropName')}</TableHead>
+                    <TableHead>{t('category')}</TableHead>
+                    <TableHead>{t('price')}</TableHead>
+                    <TableHead>{t('quantity')}</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {crops.map((crop) => (
+                    <TableRow key={crop.id}>
+                      <TableCell className="font-medium">{crop.name}</TableCell>
+                      <TableCell>{crop.category}</TableCell>
+                      <TableCell>{t('currency')} {crop.price}</TableCell>
+                      <TableCell>{crop.quantity}</TableCell>
+                      <TableCell>
+                        <Badge variant={crop.status === 'active' ? 'default' : 'secondary'}>
+                          {t(crop.status)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {crop.status === 'active' && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleCloseCrop(crop.id)}
+                          >
+                            <X className="h-4 w-4 mr-1" />
+                            {t('closeCrop')}
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="orders" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('orderTracking')}</CardTitle>
+              <CardDescription>Track and manage your orders</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Order ID</TableHead>
+                    <TableHead>Crop</TableHead>
+                    <TableHead>{t('buyer')}</TableHead>
+                    <TableHead>{t('quantity')}</TableHead>
+                    <TableHead>{t('amount')}</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {orders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell>#{order.id}</TableCell>
+                      <TableCell className="font-medium">{order.cropName}</TableCell>
+                      <TableCell>{order.buyer}</TableCell>
+                      <TableCell>{order.quantity}</TableCell>
+                      <TableCell>{t('currency')} {order.amount}</TableCell>
+                      <TableCell>
+                        <Badge variant={
+                          order.status === 'delivered' ? 'default' : 
+                          order.status === 'shipped' ? 'secondary' : 'outline'
+                        }>
+                          {t(order.status)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {order.status === 'pending' && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => openShipModal(order)}
+                          >
+                            <Upload className="h-4 w-4 mr-1" />
+                            {t('markAsShipped')}
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="profile" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>{t('profileManagement')}</CardTitle>
+                  <CardDescription>Manage your profile information</CardDescription>
+                </div>
+                <Button onClick={() => setIsProfileModalOpen(true)}>
+                  <User className="h-4 w-4 mr-2" />
+                  {t('update')} Profile
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">{t('name')}</label>
+                  <p className="text-lg">Mohamed Hassan</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">{t('email')}</label>
+                  <p className="text-lg">mohamed@example.com</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">{t('location')}</label>
+                  <p className="text-lg">Giza, Egypt</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Phone</label>
+                  <p className="text-lg">+20 123 456 789</p>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <p className="text-green-600">You have access to all premium features</p>
-              <Button variant="outline">{t('manageSubscription')}</Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Analytics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{t('currency')} {totalSales}</div>
-            <p className="text-xs text-muted-foreground">Last 30 days</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalOrders}</div>
-            <p className="text-xs text-muted-foreground">All time</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('pendingOrders')}</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{pendingOrders}</div>
-            <p className="text-xs text-muted-foreground">Awaiting action</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Crops</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{activeCrops}</div>
-            <p className="text-xs text-muted-foreground">Currently listed</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Crop Management */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>{t('cropManagement')}</CardTitle>
-              <CardDescription>Manage your crop listings</CardDescription>
-            </div>
-            <Button onClick={() => setIsAddCropModalOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              {t('addCrop')}
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('cropName')}</TableHead>
-                <TableHead>{t('category')}</TableHead>
-                <TableHead>{t('price')}</TableHead>
-                <TableHead>{t('quantity')}</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {crops.map((crop) => (
-                <TableRow key={crop.id}>
-                  <TableCell className="font-medium">{crop.name}</TableCell>
-                  <TableCell>{crop.category}</TableCell>
-                  <TableCell>{t('currency')} {crop.price}</TableCell>
-                  <TableCell>{crop.quantity}</TableCell>
-                  <TableCell>
-                    <Badge variant={crop.status === 'active' ? 'default' : 'secondary'}>
-                      {t(crop.status)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {crop.status === 'active' && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleCloseCrop(crop.id)}
-                      >
-                        <X className="h-4 w-4 mr-1" />
-                        {t('closeCrop')}
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Order Tracking */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('orderTracking')}</CardTitle>
-          <CardDescription>Track and manage your orders</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Order ID</TableHead>
-                <TableHead>Crop</TableHead>
-                <TableHead>Buyer</TableHead>
-                <TableHead>{t('quantity')}</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell>#{order.id}</TableCell>
-                  <TableCell className="font-medium">{order.cropName}</TableCell>
-                  <TableCell>{order.buyer}</TableCell>
-                  <TableCell>{order.quantity}</TableCell>
-                  <TableCell>{t('currency')} {order.amount}</TableCell>
-                  <TableCell>
-                    <Badge variant={
-                      order.status === 'delivered' ? 'default' : 
-                      order.status === 'shipped' ? 'secondary' : 'outline'
-                    }>
-                      {t(order.status)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {order.status === 'pending' && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => openShipModal(order)}
-                      >
-                        <Upload className="h-4 w-4 mr-1" />
-                        {t('markAsShipped')}
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      {/* Profile Management */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>{t('profileManagement')}</CardTitle>
-              <CardDescription>Manage your profile information</CardDescription>
-            </div>
-            <Button onClick={() => setIsProfileModalOpen(true)}>
-              <User className="h-4 w-4 mr-2" />
-              {t('update')} Profile
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium">Name</label>
-              <p className="text-lg">Mohamed Hassan</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium">Email</label>
-              <p className="text-lg">mohamed@example.com</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium">{t('location')}</label>
-              <p className="text-lg">Giza, Egypt</p>
-            </div>
-            <div>
-              <label className="text-sm font-medium">Phone</label>
-              <p className="text-lg">+20 123 456 789</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <TabsContent value="subscription" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <CreditCard className="h-5 w-5" />
+                    {t('subscription')}
+                  </CardTitle>
+                  <CardDescription>
+                    {isSubscribed ? t('subscribed') : t('notSubscribed')}
+                  </CardDescription>
+                </div>
+                <Badge variant={isSubscribed ? "default" : "secondary"}>
+                  {isSubscribed ? t('premiumPlan') : t('notSubscribed')}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {!isSubscribed ? (
+                <div className="space-y-4">
+                  <div className="p-4 border rounded-lg">
+                    <h3 className="font-semibold mb-2">{t('premiumPlan')}</h3>
+                    <p className="text-sm text-gray-600 mb-2">
+                      • {t('unlimited')} crop listings
+                    </p>
+                    <p className="text-sm text-gray-600 mb-2">
+                      • Advanced analytics
+                    </p>
+                    <p className="text-sm text-gray-600 mb-4">
+                      • Priority {t('support')}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold">$29/{t('monthlyPlan')}</span>
+                      <Link to="/payment">
+                        <Button>{t('subscribe')}</Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <p className="text-green-600">You have access to all premium features</p>
+                  <Button variant="outline">{t('manageSubscription')}</Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Modals */}
       <AddCropModal

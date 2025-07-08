@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'ar' | 'en';
@@ -75,6 +74,34 @@ const translations = {
     farmerDashboard: 'لوحة تحكم المزارع',
     buyerDashboard: 'لوحة تحكم المشتري',
     
+    // Admin Dashboard
+    userVerification: 'التحقق من المستخدمين',
+    reviewVerifyRegistrations: 'مراجعة والتحقق من التسجيلات الجديدة',
+    userManagement: 'إدارة المستخدمين',
+    updateDeleteBanUsers: 'تحديث، حذف، أو حظر المستخدمين الحاليين',
+    cropReview: 'مراجعة المحاصيل',
+    acceptRejectCropListings: 'قبول أو رفض قوائم المحاصيل',
+    ordersOnHold: 'الطلبات المعلقة',
+    reviewOrdersReleasePayments: 'مراجعة الطلبات وإطلاق المدفوعات للمزارعين',
+    name: 'الاسم',
+    email: 'البريد الإلكتروني',
+    role: 'الدور',
+    documents: 'الوثائق',
+    actions: 'الإجراءات',
+    review: 'مراجعة',
+    approve: 'موافقة',
+    reject: 'رفض',
+    status: 'الحالة',
+    joinDate: 'تاريخ الانضمام',
+    completedOrders30Days: 'الطلبات المكتملة (30 يوم)',
+    totalPayments30Days: 'إجمالي المدفوعات (30 يوم)',
+    mostOrderedCrop: 'المحصول الأكثر طلباً',
+    activeFarmers: 'المزارعون النشطون',
+    files: 'ملفات',
+    amount: 'المبلغ',
+    images: 'الصور',
+    releasePayment: 'إطلاق الدفع',
+    
     // Farmer Dashboard
     cropManagement: 'إدارة المحاصيل',
     addCrop: 'إضافة محصول',
@@ -95,6 +122,35 @@ const translations = {
     monthlyPlan: 'شهرياً',
     unlimited: 'غير محدود',
     support: 'الدعم',
+    cropType: 'نوع المحصول',
+    selectCropType: 'اختر نوع المحصول',
+    
+    // Buyer Dashboard  
+    orderHistory: 'سجل الطلبات',
+    purchaseAnalytics: 'تحليل المشتريات',
+    cancelOrder: 'إلغاء الطلب',
+    buyer: 'المشتري',
+    orderDate: 'تاريخ الطلب',
+    
+    // Crop types
+    banana: 'موز',
+    apple: 'تفاح',
+    orange: 'برتقال',
+    mango: 'مانجو',
+    grapes: 'عنب',
+    strawberry: 'فراولة',
+    tomato: 'طماطم',
+    cucumber: 'خيار',
+    carrot: 'جزر',
+    potato: 'بطاطس',
+    onion: 'بصل',
+    garlic: 'ثوم',
+    wheat: 'قمح',
+    rice: 'أرز',
+    corn: 'ذرة',
+    beans: 'فول',
+    lentils: 'عدس',
+    chickpeas: 'حمص',
     
     // Form fields
     cropName: 'اسم المحصول',
@@ -189,6 +245,34 @@ const translations = {
     farmerDashboard: 'Farmer Dashboard',
     buyerDashboard: 'Buyer Dashboard',
     
+    // Admin Dashboard
+    userVerification: 'User Verification',
+    reviewVerifyRegistrations: 'Review and verify new user registrations',
+    userManagement: 'User Management',
+    updateDeleteBanUsers: 'Update, delete, or ban existing users',
+    cropReview: 'Crop Review',
+    acceptRejectCropListings: 'Accept or reject crop listings',
+    ordersOnHold: 'Orders On Hold',
+    reviewOrdersReleasePayments: 'Review orders and release payments to farmers',
+    name: 'Name',
+    email: 'Email',
+    role: 'Role',
+    documents: 'Documents',
+    actions: 'Actions',
+    review: 'Review',
+    approve: 'Approve',
+    reject: 'Reject',
+    status: 'Status',
+    joinDate: 'Join Date',
+    completedOrders30Days: 'Completed Orders (30 days)',
+    totalPayments30Days: 'Total Payments (30 days)',
+    mostOrderedCrop: 'Most Ordered Crop',
+    activeFarmers: 'Active Farmers',
+    files: 'files',
+    amount: 'Amount',
+    images: 'Images',
+    releasePayment: 'Release Payment',
+    
     // Farmer Dashboard
     cropManagement: 'Crop Management',
     addCrop: 'Add Crop',
@@ -209,6 +293,35 @@ const translations = {
     monthlyPlan: 'Monthly',
     unlimited: 'Unlimited',
     support: 'Support',
+    cropType: 'Crop Type',
+    selectCropType: 'Select crop type',
+    
+    // Buyer Dashboard
+    orderHistory: 'Order History',
+    purchaseAnalytics: 'Purchase Analytics',
+    cancelOrder: 'Cancel Order',
+    buyer: 'Buyer',
+    orderDate: 'Order Date',
+    
+    // Crop types
+    banana: 'Banana',
+    apple: 'Apple',
+    orange: 'Orange',
+    mango: 'Mango',
+    grapes: 'Grapes',
+    strawberry: 'Strawberry',
+    tomato: 'Tomato',
+    cucumber: 'Cucumber',
+    carrot: 'Carrot',
+    potato: 'Potato',
+    onion: 'Onion',
+    garlic: 'Garlic',
+    wheat: 'Wheat',
+    rice: 'Rice',
+    corn: 'Corn',
+    beans: 'Beans',
+    lentils: 'Lentils',
+    chickpeas: 'Chickpeas',
     
     // Form fields
     cropName: 'Crop Name',

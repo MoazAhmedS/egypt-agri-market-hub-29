@@ -18,12 +18,15 @@ import {
   Trash2,
   DollarSign
 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import UserReviewModal from "@/components/modals/UserReviewModal";
 import UserUpdateModal from "@/components/modals/UserUpdateModal";
 import CropReviewModal from "@/components/modals/CropReviewModal";
 import OrderReviewModal from "@/components/modals/OrderReviewModal";
 
 const AdminDashboard = () => {
+  const { t } = useLanguage();
+  
   // Modal states
   const [userReviewModal, setUserReviewModal] = useState<{ isOpen: boolean; user: any }>({ isOpen: false, user: null });
   const [userUpdateModal, setUserUpdateModal] = useState<{ isOpen: boolean; user: any }>({ isOpen: false, user: null });
@@ -133,7 +136,7 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed Orders (30 days)</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('completedOrders30Days')}</CardTitle>
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -144,18 +147,18 @@ const AdminDashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Payments (30 days)</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('totalPayments30Days')}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">EGP {analytics.totalPayments.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{t('currency')} {analytics.totalPayments.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">+8% from last month</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Most Ordered Crop</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('mostOrderedCrop')}</CardTitle>
             <Wheat className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -166,7 +169,7 @@ const AdminDashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Farmers</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('activeFarmers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -178,27 +181,27 @@ const AdminDashboard = () => {
 
       <Tabs defaultValue="pending-users" className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="pending-users">Pending Users</TabsTrigger>
-          <TabsTrigger value="manage-users">Manage Users</TabsTrigger>
-          <TabsTrigger value="pending-crops">Pending Crops</TabsTrigger>
-          <TabsTrigger value="pending-orders">Pending Orders</TabsTrigger>
+          <TabsTrigger value="pending-users">{t('userVerification')}</TabsTrigger>
+          <TabsTrigger value="manage-users">{t('userManagement')}</TabsTrigger>
+          <TabsTrigger value="pending-crops">{t('cropReview')}</TabsTrigger>
+          <TabsTrigger value="pending-orders">{t('ordersOnHold')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending-users" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>User Verification</CardTitle>
-              <CardDescription>Review and verify new user registrations</CardDescription>
+              <CardTitle>{t('userVerification')}</CardTitle>
+              <CardDescription>{t('reviewVerifyRegistrations')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Documents</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{t('name')}</TableHead>
+                    <TableHead>{t('email')}</TableHead>
+                    <TableHead>{t('role')}</TableHead>
+                    <TableHead>{t('documents')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -209,7 +212,7 @@ const AdminDashboard = () => {
                       <TableCell>
                         <Badge variant="outline">{user.role}</Badge>
                       </TableCell>
-                      <TableCell>{user.documents} files</TableCell>
+                      <TableCell>{user.documents} {t('files')}</TableCell>
                       <TableCell className="space-x-2">
                         <Button 
                           size="sm" 
@@ -217,7 +220,7 @@ const AdminDashboard = () => {
                           onClick={() => setUserReviewModal({ isOpen: true, user })}
                         >
                           <Eye className="h-4 w-4 mr-1" />
-                          Review
+                          {t('review')}
                         </Button>
                         <Button 
                           size="sm" 
@@ -225,7 +228,7 @@ const AdminDashboard = () => {
                           onClick={() => handleUserApprove(user.id)}
                         >
                           <CheckCircle className="h-4 w-4 mr-1" />
-                          Approve
+                          {t('approve')}
                         </Button>
                         <Button 
                           size="sm" 
@@ -233,7 +236,7 @@ const AdminDashboard = () => {
                           onClick={() => handleUserReject(user.id)}
                         >
                           <XCircle className="h-4 w-4 mr-1" />
-                          Reject
+                          {t('reject')}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -247,19 +250,19 @@ const AdminDashboard = () => {
         <TabsContent value="manage-users" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription>Update, delete, or ban existing users</CardDescription>
+              <CardTitle>{t('userManagement')}</CardTitle>
+              <CardDescription>{t('updateDeleteBanUsers')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Join Date</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{t('name')}</TableHead>
+                    <TableHead>{t('email')}</TableHead>
+                    <TableHead>{t('role')}</TableHead>
+                    <TableHead>{t('status')}</TableHead>
+                    <TableHead>{t('joinDate')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -272,7 +275,7 @@ const AdminDashboard = () => {
                       </TableCell>
                       <TableCell>
                         <Badge variant={user.status === 'active' ? 'default' : 'destructive'}>
-                          {user.status}
+                          {t(user.status)}
                         </Badge>
                       </TableCell>
                       <TableCell>{user.joinDate}</TableCell>
@@ -310,19 +313,19 @@ const AdminDashboard = () => {
         <TabsContent value="pending-crops" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Crop Review</CardTitle>
-              <CardDescription>Accept or reject crop listings</CardDescription>
+              <CardTitle>{t('cropReview')}</CardTitle>
+              <CardDescription>{t('acceptRejectCropListings')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Crop Name</TableHead>
-                    <TableHead>Farmer</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price (EGP)</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{t('cropName')}</TableHead>
+                    <TableHead>{t('farmer')}</TableHead>
+                    <TableHead>{t('category')}</TableHead>
+                    <TableHead>{t('price')} ({t('currency')})</TableHead>
+                    <TableHead>{t('quantity')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -342,7 +345,7 @@ const AdminDashboard = () => {
                           onClick={() => setCropReviewModal({ isOpen: true, crop })}
                         >
                           <Eye className="h-4 w-4 mr-1" />
-                          View
+                          {t('review')}
                         </Button>
                         <Button 
                           size="sm" 
@@ -350,7 +353,7 @@ const AdminDashboard = () => {
                           onClick={() => handleCropAccept(crop.id)}
                         >
                           <CheckCircle className="h-4 w-4 mr-1" />
-                          Accept
+                          {t('approve')}
                         </Button>
                         <Button 
                           size="sm" 
@@ -358,7 +361,7 @@ const AdminDashboard = () => {
                           onClick={() => handleCropReject(crop.id)}
                         >
                           <XCircle className="h-4 w-4 mr-1" />
-                          Reject
+                          {t('reject')}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -372,20 +375,20 @@ const AdminDashboard = () => {
         <TabsContent value="pending-orders" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Orders On Hold</CardTitle>
-              <CardDescription>Review orders and release payments to farmers</CardDescription>
+              <CardTitle>{t('ordersOnHold')}</CardTitle>
+              <CardDescription>{t('reviewOrdersReleasePayments')}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Order #</TableHead>
-                    <TableHead>Farmer</TableHead>
-                    <TableHead>Buyer</TableHead>
+                    <TableHead>{t('farmer')}</TableHead>
+                    <TableHead>{t('buyer')}</TableHead>
                     <TableHead>Crop</TableHead>
-                    <TableHead>Amount (EGP)</TableHead>
-                    <TableHead>Images</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{t('amount')} ({t('currency')})</TableHead>
+                    <TableHead>{t('images')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -398,8 +401,8 @@ const AdminDashboard = () => {
                       <TableCell>{order.amount.toLocaleString()}</TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          <div>Farmer: {order.farmerImages} images</div>
-                          <div>Buyer: {order.buyerImages} images</div>
+                          <div>{t('farmer')}: {order.farmerImages} {t('images')}</div>
+                          <div>{t('buyer')}: {order.buyerImages} {t('images')}</div>
                         </div>
                       </TableCell>
                       <TableCell className="space-x-2">
@@ -409,7 +412,7 @@ const AdminDashboard = () => {
                           onClick={() => setOrderReviewModal({ isOpen: true, order })}
                         >
                           <Eye className="h-4 w-4 mr-1" />
-                          Review
+                          {t('review')}
                         </Button>
                         <Button 
                           size="sm" 
@@ -417,7 +420,7 @@ const AdminDashboard = () => {
                           onClick={() => handlePaymentRelease(order.id)}
                         >
                           <DollarSign className="h-4 w-4 mr-1" />
-                          Release Payment
+                          {t('releasePayment')}
                         </Button>
                       </TableCell>
                     </TableRow>
