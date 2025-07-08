@@ -1,0 +1,47 @@
+
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import Index from "./pages/Index";
+import Login from "./pages/auth/Login";
+import SignupRole from "./pages/auth/SignupRole";
+import SignupBasicInfo from "./pages/auth/SignupBasicInfo";
+import SignupLocation from "./pages/auth/SignupLocation";
+import SignupDocuments from "./pages/auth/SignupDocuments";
+import BrowseProducts from "./pages/BrowseProducts";
+import About from "./pages/About";
+import ProductDetails from "./pages/ProductDetails";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignupRole />} />
+            <Route path="/signup/basic-info" element={<SignupBasicInfo />} />
+            <Route path="/signup/location" element={<SignupLocation />} />
+            <Route path="/signup/documents" element={<SignupDocuments />} />
+            <Route path="/browse" element={<BrowseProducts />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </LanguageProvider>
+  </QueryClientProvider>
+);
+
+export default App;
