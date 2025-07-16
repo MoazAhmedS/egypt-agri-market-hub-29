@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, TrendingUp, ShoppingCart, Package, X, Wallet, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
+import { User, TrendingUp, ShoppingCart, Package, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import ProfileModal from "@/components/modals/ProfileModal";
@@ -20,30 +20,11 @@ interface Order {
   orderDate: string;
 }
 
-interface WalletTransaction {
-  id: number;
-  date: string;
-  type: 'topUp' | 'withdrawal' | 'payment' | 'refund';
-  amount: number;
-  description: string;
-  status: 'completed' | 'pending' | 'failed';
-}
-
 const BuyerDashboard = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
   
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  
-  // Wallet state
-  const [walletBalance, setWalletBalance] = useState(1250);
-  const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([
-    { id: 1, date: "2024-01-22", type: "payment", amount: -1500, description: t('orderPayment') + " - " + t('tomato'), status: "completed" },
-    { id: 2, date: "2024-01-21", type: "topUp", amount: 2000, description: t('walletTopUp'), status: "completed" },
-    { id: 3, date: "2024-01-20", type: "payment", amount: -600, description: t('orderPayment') + " - " + t('orange'), status: "completed" },
-    { id: 4, date: "2024-01-19", type: "refund", amount: 480, description: t('orderRefund') + " - " + t('carrot'), status: "completed" },
-    { id: 5, date: "2024-01-18", type: "payment", amount: -1600, description: t('orderPayment') + " - " + t('wheat'), status: "completed" },
-  ]);
   
   // Mock data
   const [orders, setOrders] = useState<Order[]>([
@@ -61,49 +42,6 @@ const BuyerDashboard = () => {
     toast({
       title: "Order Cancelled",
       description: "Order has been cancelled successfully.",
-    });
-  };
-
-  const handleTopUp = () => {
-    const newTransaction: WalletTransaction = {
-      id: walletTransactions.length + 1,
-      date: new Date().toISOString().split('T')[0],
-      type: 'topUp',
-      amount: 1000,
-      description: t('walletTopUp'),
-      status: 'completed'
-    };
-    setWalletTransactions([newTransaction, ...walletTransactions]);
-    setWalletBalance(walletBalance + 1000);
-    toast({
-      title: "Top Up Successful",
-      description: `Your wallet has been topped up with ${t('currency')} 1000`,
-    });
-  };
-
-  const handleWithdraw = () => {
-    if (walletBalance < 100) {
-      toast({
-        title: "Insufficient Balance",
-        description: "You need at least 100 EGP to withdraw.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    const newTransaction: WalletTransaction = {
-      id: walletTransactions.length + 1,
-      date: new Date().toISOString().split('T')[0],
-      type: 'withdrawal',
-      amount: -100,
-      description: t('walletWithdrawal'),
-      status: 'completed'
-    };
-    setWalletTransactions([newTransaction, ...walletTransactions]);
-    setWalletBalance(walletBalance - 100);
-    toast({
-      title: "Withdrawal Successful",
-      description: `${t('currency')} 100 has been withdrawn from your wallet`,
     });
   };
 
@@ -129,10 +67,9 @@ const BuyerDashboard = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="overview">{t('purchaseAnalytics')}</TabsTrigger>
           <TabsTrigger value="orders">{t('orderHistory')}</TabsTrigger>
-          <TabsTrigger value="wallet">{t('wallet')}</TabsTrigger>
           <TabsTrigger value="profile">{t('profileManagement')}</TabsTrigger>
         </TabsList>
 
@@ -281,90 +218,6 @@ const BuyerDashboard = () => {
                             {t('cancelOrder')}
                           </Button>
                         )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="wallet" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('currentBalance')}</CardTitle>
-                <Wallet className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{t('currency')} {walletBalance}</div>
-                <p className="text-xs text-muted-foreground">Available balance</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">{t('topUpNow')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button onClick={handleTopUp} className="w-full">
-                  <ArrowUpCircle className="h-4 w-4 mr-2" />
-                  {t('topUpNow')}
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">{t('withdraw')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button onClick={handleWithdraw} variant="outline" className="w-full">
-                  <ArrowDownCircle className="h-4 w-4 mr-2" />
-                  {t('withdraw')}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('transactionHistory')}</CardTitle>
-              <CardDescription>Your recent wallet transactions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('date')}</TableHead>
-                    <TableHead>{t('type')}</TableHead>
-                    <TableHead>{t('description')}</TableHead>
-                    <TableHead>{t('amount')}</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {walletTransactions.map((transaction) => (
-                    <TableRow key={transaction.id}>
-                      <TableCell>{transaction.date}</TableCell>
-                      <TableCell>
-                        <Badge variant={
-                          transaction.type === 'topUp' ? 'default' : 
-                          transaction.type === 'refund' ? 'secondary' : 
-                          transaction.type === 'payment' ? 'destructive' : 'outline'
-                        }>
-                          {t(transaction.type)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{transaction.description}</TableCell>
-                      <TableCell className={transaction.amount > 0 ? 'text-green-600' : 'text-red-600'}>
-                        {transaction.amount > 0 ? '+' : ''}{t('currency')} {Math.abs(transaction.amount)}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={transaction.status === 'completed' ? 'default' : 'secondary'}>
-                          {transaction.status}
-                        </Badge>
                       </TableCell>
                     </TableRow>
                   ))}
