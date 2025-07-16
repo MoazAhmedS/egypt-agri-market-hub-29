@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'ar' | 'en';
@@ -133,6 +134,29 @@ const translations = {
     buyer: 'المشتري',
     orderDate: 'تاريخ الطلب',
     
+    // Wallet
+    wallet: 'المحفظة',
+    currentBalance: 'الرصيد الحالي',
+    topUpNow: 'شحن الآن',
+    withdraw: 'سحب',
+    transactionHistory: 'سجل المعاملات',
+    transaction: 'معاملة',
+    transactions: 'المعاملات',
+    date: 'التاريخ',
+    type: 'النوع',
+    description: 'الوصف',
+    topUp: 'شحن',
+    withdrawal: 'سحب',
+    payment: 'دفع',
+    refund: 'استرداد',
+    earnings: 'أرباح',
+    subscriptionPayment: 'دفع الاشتراك',
+    orderPayment: 'دفع الطلب',
+    orderRefund: 'استرداد الطلب',
+    cropSale: 'بيع محصول',
+    walletTopUp: 'شحن المحفظة',
+    walletWithdrawal: 'سحب من المحفظة',
+    
     // Crop types
     banana: 'موز',
     apple: 'تفاح',
@@ -170,6 +194,7 @@ const translations = {
     pending: 'معلق',
     shipped: 'مشحون',
     delivered: 'تم التوصيل',
+    cancelled: 'ملغي',
     
     // Payment Process
     orderInformation: 'معلومات الطلب',
@@ -332,6 +357,29 @@ const translations = {
     buyer: 'Buyer',
     orderDate: 'Order Date',
     
+    // Wallet
+    wallet: 'Wallet',
+    currentBalance: 'Current Balance',
+    topUpNow: 'Top Up Now',
+    withdraw: 'Withdraw',
+    transactionHistory: 'Transaction History',
+    transaction: 'Transaction',
+    transactions: 'Transactions',
+    date: 'Date',
+    type: 'Type',
+    description: 'Description',
+    topUp: 'Top Up',
+    withdrawal: 'Withdrawal',
+    payment: 'Payment',
+    refund: 'Refund',
+    earnings: 'Earnings',
+    subscriptionPayment: 'Subscription Payment',
+    orderPayment: 'Order Payment',
+    orderRefund: 'Order Refund',
+    cropSale: 'Crop Sale',
+    walletTopUp: 'Wallet Top Up',
+    walletWithdrawal: 'Wallet Withdrawal',
+    
     // Crop types
     banana: 'Banana',
     apple: 'Apple',
@@ -369,6 +417,7 @@ const translations = {
     pending: 'Pending',
     shipped: 'Shipped',
     delivered: 'Delivered',
+    cancelled: 'Cancelled',
     
     // Payment Process
     orderInformation: 'Order Information',
