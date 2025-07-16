@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, TrendingUp, ShoppingCart, Package, X } from "lucide-react";
+import { User, TrendingUp, ShoppingCart, Package, X, Wallet } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import ProfileModal from "@/components/modals/ProfileModal";
@@ -20,11 +20,29 @@ interface Order {
   orderDate: string;
 }
 
+interface WalletTransaction {
+  id: number;
+  type: 'credit' | 'debit';
+  amount: number;
+  description: string;
+  date: string;
+  status: 'completed' | 'pending';
+}
+
 const BuyerDashboard = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
   
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  
+  // Wallet state (mock data)
+  const [walletBalance] = useState(1250.50);
+  const [walletTransactions] = useState<WalletTransaction[]>([
+    { id: 1, type: 'debit', amount: 1500, description: 'Purchase: Tomatoes from Ahmed Hassan', date: '2024-01-20', status: 'completed' },
+    { id: 2, type: 'debit', amount: 600, description: 'Purchase: Oranges from Omar Ali', date: '2024-01-18', status: 'completed' },
+    { id: 3, type: 'credit', amount: 480, description: 'Refund: Cancelled Carrots order', date: '2024-01-15', status: 'completed' },
+    { id: 4, type: 'credit', amount: 2000, description: 'Wallet top-up', date: '2024-01-10', status: 'completed' },
+  ]);
   
   // Mock data
   const [orders, setOrders] = useState<Order[]>([
@@ -67,9 +85,10 @@ const BuyerDashboard = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">{t('purchaseAnalytics')}</TabsTrigger>
           <TabsTrigger value="orders">{t('orderHistory')}</TabsTrigger>
+          <TabsTrigger value="wallet">{t('wallet')}</TabsTrigger>
           <TabsTrigger value="profile">{t('profileManagement')}</TabsTrigger>
         </TabsList>
 
@@ -225,6 +244,71 @@ const BuyerDashboard = () => {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="wallet" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="md:col-span-1">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Wallet className="h-5 w-5" />
+                  {t('walletBalance')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-green-600">
+                  {t('currency')} {walletBalance.toFixed(2)}
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {t('availableBalance')}
+                </p>
+                <Button className="mt-4 w-full">
+                  {t('topUpWallet')}
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="md:col-span-2">
+              <CardHeader>
+                <CardTitle>{t('recentTransactions')}</CardTitle>
+                <CardDescription>{t('walletTransactionHistory')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t('type')}</TableHead>
+                      <TableHead>{t('description')}</TableHead>
+                      <TableHead>{t('amount')}</TableHead>
+                      <TableHead>{t('date')}</TableHead>
+                      <TableHead>{t('status')}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {walletTransactions.map((transaction) => (
+                      <TableRow key={transaction.id}>
+                        <TableCell>
+                          <Badge variant={transaction.type === 'credit' ? 'default' : 'secondary'}>
+                            {t(transaction.type)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{transaction.description}</TableCell>
+                        <TableCell className={transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}>
+                          {transaction.type === 'credit' ? '+' : '-'}{t('currency')} {transaction.amount}
+                        </TableCell>
+                        <TableCell>{transaction.date}</TableCell>
+                        <TableCell>
+                          <Badge variant={transaction.status === 'completed' ? 'default' : 'outline'}>
+                            {t(transaction.status)}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="profile" className="space-y-4">
