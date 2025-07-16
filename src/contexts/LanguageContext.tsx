@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'ar' | 'en';
@@ -84,6 +85,8 @@ const translations = {
     acceptRejectCropListings: 'قبول أو رفض قوائم المحاصيل',
     ordersOnHold: 'الطلبات المعلقة',
     reviewOrdersReleasePayments: 'مراجعة الطلبات وإطلاق المدفوعات للمزارعين',
+    withdrawalRequests: 'طلبات السحب',
+    reviewWithdrawalRequests: 'مراجعة طلبات السحب من المحافظ',
     name: 'الاسم',
     email: 'البريد الإلكتروني',
     role: 'الدور',
@@ -102,6 +105,10 @@ const translations = {
     amount: 'المبلغ',
     images: 'الصور',
     releasePayment: 'إطلاق الدفع',
+    user: 'المستخدم',
+    userType: 'نوع المستخدم',
+    requestDate: 'تاريخ الطلب',
+    accountDetails: 'تفاصيل الحساب',
     
     // Farmer Dashboard
     cropManagement: 'إدارة المحاصيل',
@@ -283,6 +290,8 @@ const translations = {
     acceptRejectCropListings: 'Accept or reject crop listings',
     ordersOnHold: 'Orders On Hold',
     reviewOrdersReleasePayments: 'Review orders and release payments to farmers',
+    withdrawalRequests: 'Withdrawal Requests',
+    reviewWithdrawalRequests: 'Review withdrawal requests from user wallets',
     name: 'Name',
     email: 'Email',
     role: 'Role',
@@ -301,6 +310,10 @@ const translations = {
     amount: 'Amount',
     images: 'Images',
     releasePayment: 'Release Payment',
+    user: 'User',
+    userType: 'User Type',
+    requestDate: 'Request Date',
+    accountDetails: 'Account Details',
     
     // Farmer Dashboard
     cropManagement: 'Crop Management',

@@ -16,7 +16,8 @@ import {
   Ban,
   Edit,
   Trash2,
-  DollarSign
+  DollarSign,
+  Wallet
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import UserReviewModal from "@/components/modals/UserReviewModal";
@@ -77,6 +78,36 @@ const AdminDashboard = () => {
     },
   ]);
 
+  const [withdrawalRequests, setWithdrawalRequests] = useState([
+    {
+      id: 1,
+      user: "Ahmed Hassan",
+      userType: "Farmer",
+      amount: 1500,
+      requestDate: "2024-01-15",
+      status: "pending",
+      accountDetails: "Bank Account: 1234567890"
+    },
+    {
+      id: 2,
+      user: "Fatma Ahmed",
+      userType: "Buyer",
+      amount: 800,
+      requestDate: "2024-01-16",
+      status: "pending",
+      accountDetails: "Bank Account: 0987654321"
+    },
+    {
+      id: 3,
+      user: "Omar Ali",
+      userType: "Farmer",
+      amount: 2200,
+      requestDate: "2024-01-17",
+      status: "pending",
+      accountDetails: "Bank Account: 5555666677"
+    },
+  ]);
+
   // Analytics data
   const analytics = {
     completedOrders: 45,
@@ -130,6 +161,16 @@ const AdminDashboard = () => {
     console.log(`Released payment for order ${orderId}`);
   };
 
+  const handleWithdrawalApprove = (withdrawalId: number) => {
+    setWithdrawalRequests(prev => prev.filter(withdrawal => withdrawal.id !== withdrawalId));
+    console.log(`Approved withdrawal ${withdrawalId}`);
+  };
+
+  const handleWithdrawalReject = (withdrawalId: number) => {
+    setWithdrawalRequests(prev => prev.filter(withdrawal => withdrawal.id !== withdrawalId));
+    console.log(`Rejected withdrawal ${withdrawalId}`);
+  };
+
   return (
     <div className="space-y-6">
       {/* Analytics Cards */}
@@ -180,11 +221,12 @@ const AdminDashboard = () => {
       </div>
 
       <Tabs defaultValue="pending-users" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="pending-users">{t('userVerification')}</TabsTrigger>
           <TabsTrigger value="manage-users">{t('userManagement')}</TabsTrigger>
           <TabsTrigger value="pending-crops">{t('cropReview')}</TabsTrigger>
           <TabsTrigger value="pending-orders">{t('ordersOnHold')}</TabsTrigger>
+          <TabsTrigger value="withdrawal-requests">{t('withdrawalRequests')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending-users" className="space-y-4">
@@ -421,6 +463,64 @@ const AdminDashboard = () => {
                         >
                           <DollarSign className="h-4 w-4 mr-1" />
                           {t('releasePayment')}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="withdrawal-requests" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('withdrawalRequests')}</CardTitle>
+              <CardDescription>{t('reviewWithdrawalRequests')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('user')}</TableHead>
+                    <TableHead>{t('userType')}</TableHead>
+                    <TableHead>{t('amount')} ({t('currency')})</TableHead>
+                    <TableHead>{t('requestDate')}</TableHead>
+                    <TableHead>{t('accountDetails')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {withdrawalRequests.map((withdrawal) => (
+                    <TableRow key={withdrawal.id}>
+                      <TableCell className="font-medium">{withdrawal.user}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{withdrawal.userType}</Badge>
+                      </TableCell>
+                      <TableCell>{withdrawal.amount.toLocaleString()}</TableCell>
+                      <TableCell>{withdrawal.requestDate}</TableCell>
+                      <TableCell>
+                        <div className="text-sm text-muted-foreground">
+                          {withdrawal.accountDetails}
+                        </div>
+                      </TableCell>
+                      <TableCell className="space-x-2">
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={() => handleWithdrawalApprove(withdrawal.id)}
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          {t('approve')}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => handleWithdrawalReject(withdrawal.id)}
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          {t('reject')}
                         </Button>
                       </TableCell>
                     </TableRow>
