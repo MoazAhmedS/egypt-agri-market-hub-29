@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Package, TrendingUp, User, CreditCard, Upload, X } from "lucide-react";
+import { Plus, Package, TrendingUp, User, CreditCard, Upload, X, Wallet, ArrowUp, ArrowDown } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import AddCropModal from "@/components/modals/AddCropModal";
@@ -33,6 +33,15 @@ interface Order {
   orderDate: string;
 }
 
+interface Transaction {
+  id: number;
+  type: 'topUp' | 'withdrawal' | 'earning' | 'payment';
+  amount: number;
+  status: 'pending' | 'completed' | 'cancelled';
+  date: string;
+  description: string;
+}
+
 const FarmerDashboard = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
@@ -46,6 +55,9 @@ const FarmerDashboard = () => {
   // Subscription state (mock data)
   const [isSubscribed, setIsSubscribed] = useState(false);
   
+  // Wallet state
+  const [walletBalance, setWalletBalance] = useState(2580.50);
+
   // Mock data
   const [crops, setCrops] = useState<Crop[]>([
     { id: 1, name: "Tomatoes", category: "Vegetables", price: 15, quantity: "500 kg", status: "active", createdAt: "2024-01-15" },
@@ -57,6 +69,13 @@ const FarmerDashboard = () => {
     { id: 1, cropName: "Tomatoes", buyer: "Ahmed Store", quantity: "100 kg", amount: 1500, status: "pending", orderDate: "2024-01-20" },
     { id: 2, cropName: "Oranges", buyer: "Fresh Market", quantity: "50 kg", amount: 600, status: "shipped", orderDate: "2024-01-18" },
     { id: 3, cropName: "Wheat", buyer: "Bakery Co.", quantity: "200 kg", amount: 1600, status: "delivered", orderDate: "2024-01-15" },
+  ]);
+
+  const [transactions, setTransactions] = useState<Transaction[]>([
+    { id: 1, type: 'earning', amount: 1600, status: 'completed', date: '2024-01-20', description: 'Payment for Wheat order #3' },
+    { id: 2, type: 'topUp', amount: 1000, status: 'completed', date: '2024-01-18', description: 'Wallet top-up' },
+    { id: 3, type: 'withdrawal', amount: 500, status: 'pending', date: '2024-01-15', description: 'Withdrawal to bank account' },
+    { id: 4, type: 'earning', amount: 600, status: 'completed', date: '2024-01-12', description: 'Payment for Oranges order #2' },
   ]);
 
   const handleAddCrop = (cropData: any) => {
@@ -96,6 +115,20 @@ const FarmerDashboard = () => {
     });
   };
 
+  const handleTopUp = () => {
+    toast({
+      title: "Top Up",
+      description: "Redirecting to payment gateway...",
+    });
+  };
+
+  const handleWithdraw = () => {
+    toast({
+      title: "Withdrawal Request",
+      description: "Your withdrawal request has been submitted for approval.",
+    });
+  };
+
   const openShipModal = (order: Order) => {
     setSelectedOrder(order);
     setIsShipOrderModalOpen(true);
@@ -110,10 +143,11 @@ const FarmerDashboard = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">{t('salesAnalytics')}</TabsTrigger>
           <TabsTrigger value="crops">{t('cropManagement')}</TabsTrigger>
           <TabsTrigger value="orders">{t('orderTracking')}</TabsTrigger>
+          <TabsTrigger value="wallet">{t('wallet')}</TabsTrigger>
           <TabsTrigger value="profile">{t('profileManagement')}</TabsTrigger>
           <TabsTrigger value="subscription">{t('subscription')}</TabsTrigger>
         </TabsList>
@@ -272,6 +306,84 @@ const FarmerDashboard = () => {
                           </Button>
                         )}
                       </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="wallet" className="space-y-4">
+          {/* Wallet Balance Card */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Wallet className="h-5 w-5" />
+                    {t('walletManagement')}
+                  </CardTitle>
+                  <CardDescription>{t('currentBalance')}</CardDescription>
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold">{t('currency')} {walletBalance.toFixed(2)}</div>
+                  <div className="flex gap-2 mt-2">
+                    <Button onClick={handleTopUp} size="sm">
+                      <ArrowUp className="h-4 w-4 mr-1" />
+                      {t('topUpNow')}
+                    </Button>
+                    <Button onClick={handleWithdraw} variant="outline" size="sm">
+                      <ArrowDown className="h-4 w-4 mr-1" />
+                      {t('withdraw')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+          </Card>
+
+          {/* Transaction History */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('transactionHistory')}</CardTitle>
+              <CardDescription>View your recent transactions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Transaction ID</TableHead>
+                    <TableHead>{t('transactionType')}</TableHead>
+                    <TableHead>{t('amount')}</TableHead>
+                    <TableHead>{t('status')}</TableHead>
+                    <TableHead>{t('transactionDate')}</TableHead>
+                    <TableHead>Description</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions.map((transaction) => (
+                    <TableRow key={transaction.id}>
+                      <TableCell>#{transaction.id}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {t(transaction.type)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className={transaction.type === 'withdrawal' || transaction.type === 'payment' ? 'text-red-600' : 'text-green-600'}>
+                        {transaction.type === 'withdrawal' || transaction.type === 'payment' ? '-' : '+'}
+                        {t('currency')} {transaction.amount}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={
+                          transaction.status === 'completed' ? 'default' : 
+                          transaction.status === 'pending' ? 'secondary' : 'destructive'
+                        }>
+                          {t(transaction.status)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{transaction.date}</TableCell>
+                      <TableCell>{transaction.description}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

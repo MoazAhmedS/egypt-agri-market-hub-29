@@ -140,6 +140,24 @@ const translations = {
     buyer: 'المشتري',
     orderDate: 'تاريخ الطلب',
     
+    // Wallet
+    wallet: 'المحفظة',
+    walletManagement: 'إدارة المحفظة',
+    currentBalance: 'الرصيد الحالي',
+    topUpNow: 'شحن الآن',
+    withdraw: 'سحب',
+    transactions: 'المعاملات',
+    transactionHistory: 'سجل المعاملات',
+    transactionType: 'نوع المعاملة',
+    transactionDate: 'تاريخ المعاملة',
+    topUp: 'شحن',
+    withdrawal: 'سحب',
+    payment: 'دفع',
+    earning: 'أرباح',
+    pending: 'معلق',
+    completed: 'مكتمل',
+    cancelled: 'ملغي',
+    
     // Crop types
     banana: 'موز',
     apple: 'تفاح',
@@ -174,7 +192,6 @@ const translations = {
     // Status
     active: 'نشط',
     closed: 'مغلق',
-    pending: 'معلق',
     shipped: 'مشحون',
     delivered: 'تم التوصيل',
     
@@ -345,6 +362,24 @@ const translations = {
     buyer: 'Buyer',
     orderDate: 'Order Date',
     
+    // Wallet
+    wallet: 'Wallet',
+    walletManagement: 'Wallet Management',
+    currentBalance: 'Current Balance',
+    topUpNow: 'Top Up Now',
+    withdraw: 'Withdraw',
+    transactions: 'Transactions',
+    transactionHistory: 'Transaction History',
+    transactionType: 'Transaction Type',
+    transactionDate: 'Transaction Date',
+    topUp: 'Top Up',
+    withdrawal: 'Withdrawal',
+    payment: 'Payment',
+    earning: 'Earning',
+    pending: 'Pending',
+    completed: 'Completed',
+    cancelled: 'Cancelled',
+    
     // Crop types
     banana: 'Banana',
     apple: 'Apple',
@@ -379,7 +414,6 @@ const translations = {
     // Status
     active: 'Active',
     closed: 'Closed',
-    pending: 'Pending',
     shipped: 'Shipped',
     delivered: 'Delivered',
     
