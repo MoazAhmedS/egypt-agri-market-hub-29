@@ -1,14 +1,14 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, TrendingUp, ShoppingCart, Package, X, Wallet, ArrowUp, ArrowDown, Check } from "lucide-react";
+import { User, TrendingUp, ShoppingCart, Package, X, Wallet, ArrowUp, ArrowDown } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import ProfileModal from "@/components/modals/ProfileModal";
-import MarkDeliveredModal from "@/components/modals/MarkDeliveredModal";
 
 interface Order {
   id: number;
@@ -34,8 +34,6 @@ const BuyerDashboard = () => {
   const { toast } = useToast();
   
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isMarkDeliveredModalOpen, setIsMarkDeliveredModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   
   // Wallet state
   const [walletBalance, setWalletBalance] = useState(1250.75);
@@ -64,21 +62,6 @@ const BuyerDashboard = () => {
       title: "Order Cancelled",
       description: "Order has been cancelled successfully.",
     });
-  };
-
-  const handleMarkAsDelivered = (orderId: number) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, status: 'delivered' as const } : order
-    ));
-    toast({
-      title: "Order Marked as Delivered",
-      description: "Order has been marked as delivered successfully.",
-    });
-  };
-
-  const openMarkDeliveredModal = (order: Order) => {
-    setSelectedOrder(order);
-    setIsMarkDeliveredModalOpen(true);
   };
 
   const handleTopUp = () => {
@@ -259,28 +242,16 @@ const BuyerDashboard = () => {
                       </TableCell>
                       <TableCell>{order.orderDate}</TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
-                          {order.status === 'pending' && (
-                            <Button 
-                              variant="destructive" 
-                              size="sm"
-                              onClick={() => handleCancelOrder(order.id)}
-                            >
-                              <X className="h-4 w-4 mr-1" />
-                              {t('cancelOrder')}
-                            </Button>
-                          )}
-                          {order.status === 'shipped' && (
-                            <Button 
-                              variant="default" 
-                              size="sm"
-                              onClick={() => openMarkDeliveredModal(order)}
-                            >
-                              <Check className="h-4 w-4 mr-1" />
-                              {t('markAsDelivered')}
-                            </Button>
-                          )}
-                        </div>
+                        {order.status === 'pending' && (
+                          <Button 
+                            variant="destructive" 
+                            size="sm"
+                            onClick={() => handleCancelOrder(order.id)}
+                          >
+                            <X className="h-4 w-4 mr-1" />
+                            {t('cancelOrder')}
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -416,14 +387,6 @@ const BuyerDashboard = () => {
             description: "Your profile has been updated successfully.",
           });
         }}
-      />
-
-      {/* Mark Delivered Modal */}
-      <MarkDeliveredModal
-        order={selectedOrder}
-        isOpen={isMarkDeliveredModalOpen}
-        onClose={() => setIsMarkDeliveredModalOpen(false)}
-        onMarkDelivered={handleMarkAsDelivered}
       />
     </div>
   );
