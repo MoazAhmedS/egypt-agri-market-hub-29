@@ -35,7 +35,7 @@ const BuyerDashboard = () => {
   
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isMarkDeliveredModalOpen, setIsMarkDeliveredModalOpen] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   
   // Wallet state
   const [walletBalance, setWalletBalance] = useState(1250.75);
@@ -67,22 +67,23 @@ const BuyerDashboard = () => {
   };
 
   const handleMarkAsDelivered = (orderId: number) => {
-    setSelectedOrderId(orderId);
-    setIsMarkDeliveredModalOpen(true);
+    const order = orders.find(o => o.id === orderId);
+    if (order) {
+      setSelectedOrder(order);
+      setIsMarkDeliveredModalOpen(true);
+    }
   };
 
-  const handleConfirmDelivery = (images: File[], notes?: string) => {
-    if (selectedOrderId) {
-      setOrders(orders.map(order => 
-        order.id === selectedOrderId ? { ...order, status: 'delivered' as const } : order
-      ));
-      toast({
-        title: "Order Marked as Delivered",
-        description: "Order has been marked as delivered successfully.",
-      });
-    }
+  const handleConfirmDelivery = (orderId: number) => {
+    setOrders(orders.map(order => 
+      order.id === orderId ? { ...order, status: 'delivered' as const } : order
+    ));
+    toast({
+      title: "Order Marked as Delivered",
+      description: "Order has been marked as delivered successfully.",
+    });
     setIsMarkDeliveredModalOpen(false);
-    setSelectedOrderId(null);
+    setSelectedOrder(null);
   };
 
   const handleTopUp = () => {
@@ -424,10 +425,13 @@ const BuyerDashboard = () => {
 
       {/* Mark as Delivered Modal */}
       <MarkDeliveredModal
+        order={selectedOrder}
         isOpen={isMarkDeliveredModalOpen}
-        onClose={() => setIsMarkDeliveredModalOpen(false)}
-        onConfirm={handleConfirmDelivery}
-        orderId={selectedOrderId || 0}
+        onClose={() => {
+          setIsMarkDeliveredModalOpen(false);
+          setSelectedOrder(null);
+        }}
+        onMarkAsDelivered={handleConfirmDelivery}
       />
     </div>
   );

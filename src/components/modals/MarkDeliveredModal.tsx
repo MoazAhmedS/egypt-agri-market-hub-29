@@ -1,130 +1,114 @@
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Upload, X, Camera } from "lucide-react";
+import { Upload, Image } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-interface MarkDeliveredModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: (images: File[], notes?: string) => void;
-  orderId: number;
+interface Order {
+  id: number;
+  cropName: string;
+  farmer: string;
+  quantity: string;
+  amount: number;
+  status: string;
+  orderDate: string;
 }
 
-const MarkDeliveredModal = ({ isOpen, onClose, onConfirm, orderId }: MarkDeliveredModalProps) => {
+interface MarkDeliveredModalProps {
+  order: Order | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onMarkAsDelivered: (orderId: number) => void;
+}
+
+const MarkDeliveredModal = ({ order, isOpen, onClose, onMarkAsDelivered }: MarkDeliveredModalProps) => {
   const { t } = useLanguage();
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  const [notes, setNotes] = useState("");
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+
+  if (!order) return null;
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newImages = Array.from(e.target.files);
-      setSelectedImages(prev => [...prev, ...newImages]);
-      
-      // Create preview URLs
-      const newUrls = newImages.map(file => URL.createObjectURL(file));
-      setPreviewUrls(prev => [...prev, ...newUrls]);
+    const files = Array.from(e.target.files || []);
+    setUploadedImages([...uploadedImages, ...files]);
+  };
+
+  const handleSubmit = () => {
+    if (uploadedImages.length === 0) {
+      alert("Please upload at least one image before marking as delivered");
+      return;
     }
-  };
-
-  const removeImage = (index: number) => {
-    setSelectedImages(prev => prev.filter((_, i) => i !== index));
-    setPreviewUrls(prev => {
-      URL.revokeObjectURL(prev[index]);
-      return prev.filter((_, i) => i !== index);
-    });
-  };
-
-  const handleConfirm = () => {
-    onConfirm(selectedImages, notes);
-    handleClose();
-  };
-
-  const handleClose = () => {
-    // Clean up preview URLs
-    previewUrls.forEach(url => URL.revokeObjectURL(url));
-    setSelectedImages([]);
-    setPreviewUrls([]);
-    setNotes("");
+    onMarkAsDelivered(order.id);
+    setUploadedImages([]);
     onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Camera className="h-5 w-5" />
-            {t('markAsDelivered')} - Order #{orderId}
-          </DialogTitle>
+          <DialogTitle>{t('markAsDelivered')}</DialogTitle>
+          <DialogDescription>
+            Upload images and mark order as delivered
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          <div>
-            <Label htmlFor="delivery-images">{t('uploadImages')}</Label>
-            <div className="mt-2">
-              <Input
-                id="delivery-images"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageUpload}
-                className="mb-4"
-              />
-              
-              {previewUrls.length > 0 && (
-                <div className="grid grid-cols-3 gap-2 mt-4">
-                  {previewUrls.map((url, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={url}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-24 object-cover rounded border"
-                      />
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-1 right-1 h-6 w-6"
-                        onClick={() => removeImage(index)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
+          <div className="p-4 border rounded-lg bg-gray-50">
+            <h3 className="font-semibold mb-2">Order Details</h3>
+            <div className="space-y-1 text-sm">
+              <p><strong>Order ID:</strong> #{order.id}</p>
+              <p><strong>Crop:</strong> {order.cropName}</p>
+              <p><strong>Farmer:</strong> {order.farmer}</p>
+              <p><strong>Quantity:</strong> {order.quantity}</p>
+              <p><strong>Amount:</strong> {t('currency')} {order.amount}</p>
             </div>
           </div>
 
           <div>
-            <Label htmlFor="delivery-notes">{t('deliveryNotes')} ({t('optional')})</Label>
-            <Textarea
-              id="delivery-notes"
-              placeholder={t('deliveryNotesPlaceholder')}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="mt-2"
-            />
+            <Label htmlFor="images">{t('uploadImages')}</Label>
+            <div className="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+              <input
+                id="images"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <label htmlFor="images" className="cursor-pointer">
+                <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                <p className="text-sm text-gray-600">
+                  Click to upload delivery images
+                </p>
+              </label>
+            </div>
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button variant="outline" onClick={handleClose}>
-              {t('cancel')}
-            </Button>
-            <Button 
-              onClick={handleConfirm}
-              disabled={selectedImages.length === 0}
-            >
-              <Upload className="h-4 w-4 mr-2" />
-              {t('markAsDelivered')}
-            </Button>
-          </div>
+          {uploadedImages.length > 0 && (
+            <div>
+              <Label>Uploaded Images ({uploadedImages.length})</Label>
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {uploadedImages.map((file, index) => (
+                  <div key={index} className="border rounded-lg p-2 text-center">
+                    <Image className="h-8 w-8 mx-auto mb-1 text-gray-400" />
+                    <p className="text-xs text-gray-600 truncate">{file.name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            {t('cancel')}
+          </Button>
+          <Button onClick={handleSubmit}>
+            {t('markAsDelivered')}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
