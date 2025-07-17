@@ -139,6 +139,12 @@ const translations = {
     cancelOrder: 'إلغاء الطلب',
     buyer: 'المشتري',
     orderDate: 'تاريخ الطلب',
+    markAsDelivered: 'تسمية كمستلم',
+    deliveryImages: 'صور التسليم',
+    deliveryNotes: 'ملاحظات التسليم',
+    deliveryNotesPlaceholder: 'أضف أي ملاحظات حول التسليم...',
+    confirmDelivery: 'تأكيد التسليم',
+    optional: 'اختياري',
     
     // Wallet
     wallet: 'المحفظة',
@@ -361,6 +367,12 @@ const translations = {
     cancelOrder: 'Cancel Order',
     buyer: 'Buyer',
     orderDate: 'Order Date',
+    markAsDelivered: 'Mark as Delivered',
+    deliveryImages: 'Delivery Images',
+    deliveryNotes: 'Delivery Notes',
+    deliveryNotesPlaceholder: 'Add any notes about the delivery...',
+    confirmDelivery: 'Confirm Delivery',
+    optional: 'Optional',
     
     // Wallet
     wallet: 'Wallet',
