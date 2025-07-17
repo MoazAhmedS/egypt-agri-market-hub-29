@@ -66,7 +66,7 @@ const MarkDeliveredModal = ({ isOpen, onClose, onConfirm, orderId }: MarkDeliver
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="delivery-images">{t('deliveryImages')}</Label>
+            <Label htmlFor="delivery-images">{t('uploadImages')}</Label>
             <div className="mt-2">
               <Input
                 id="delivery-images"
@@ -121,7 +121,7 @@ const MarkDeliveredModal = ({ isOpen, onClose, onConfirm, orderId }: MarkDeliver
               disabled={selectedImages.length === 0}
             >
               <Upload className="h-4 w-4 mr-2" />
-              {t('confirmDelivery')}
+              {t('markAsDelivered')}
             </Button>
           </div>
         </div>
