@@ -9,6 +9,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import ProfileModal from "@/components/modals/ProfileModal";
 import MarkDeliveredModal from "@/components/modals/MarkDeliveredModal";
+import TopUpModal from "@/components/modals/TopUpModal";
+import WithdrawModal from "@/components/modals/WithdrawModal";
 
 interface Order {
   id: number;
@@ -35,6 +37,8 @@ const BuyerDashboard = () => {
   
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isMarkDeliveredModalOpen, setIsMarkDeliveredModalOpen] = useState(false);
+  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   
   // Wallet state
@@ -86,17 +90,18 @@ const BuyerDashboard = () => {
     setSelectedOrder(null);
   };
 
-  const handleTopUp = () => {
+  const handleTopUp = (amount: number, method: string) => {
+    setWalletBalance(prev => prev + amount);
     toast({
-      title: "Top Up",
-      description: "Redirecting to payment gateway...",
+      title: "Top Up Successful",
+      description: `${t('currency')} ${amount} has been added to your wallet via ${method}.`,
     });
   };
 
-  const handleWithdraw = () => {
+  const handleWithdraw = (amount: number, bankDetails: string, notes: string) => {
     toast({
-      title: "Withdrawal Request",
-      description: "Your withdrawal request has been submitted for approval.",
+      title: "Withdrawal Request Submitted",
+      description: `Withdrawal request for ${t('currency')} ${amount} has been submitted for approval.`,
     });
   };
 
@@ -310,11 +315,11 @@ const BuyerDashboard = () => {
                 <div className="text-right">
                   <div className="text-3xl font-bold">{t('currency')} {walletBalance.toFixed(2)}</div>
                   <div className="flex gap-2 mt-2">
-                    <Button onClick={handleTopUp} size="sm">
+                    <Button onClick={() => setIsTopUpModalOpen(true)} size="sm">
                       <ArrowUp className="h-4 w-4 mr-1" />
                       {t('topUpNow')}
                     </Button>
-                    <Button onClick={handleWithdraw} variant="outline" size="sm">
+                    <Button onClick={() => setIsWithdrawModalOpen(true)} variant="outline" size="sm">
                       <ArrowDown className="h-4 w-4 mr-1" />
                       {t('withdraw')}
                     </Button>
@@ -432,6 +437,21 @@ const BuyerDashboard = () => {
           setSelectedOrder(null);
         }}
         onMarkAsDelivered={handleConfirmDelivery}
+      />
+
+      {/* Top Up Modal */}
+      <TopUpModal
+        isOpen={isTopUpModalOpen}
+        onClose={() => setIsTopUpModalOpen(false)}
+        onTopUp={handleTopUp}
+      />
+
+      {/* Withdraw Modal */}
+      <WithdrawModal
+        isOpen={isWithdrawModalOpen}
+        onClose={() => setIsWithdrawModalOpen(false)}
+        onWithdraw={handleWithdraw}
+        currentBalance={walletBalance}
       />
     </div>
   );
