@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'ar' | 'en';
@@ -162,6 +163,8 @@ const translations = {
     pending: 'معلق',
     completed: 'مكتمل',
     cancelled: 'ملغي',
+    topUpWallet: 'شحن المحفظة',
+    withdrawFunds: 'سحب الأموال',
     
     // Crop types
     banana: 'موز',
@@ -236,12 +239,6 @@ const translations = {
     previous: 'السابق',
     loading: 'جاري التحميل...',
     noResults: 'لا توجد نتائج',
-    
-    // Wallet additional translations
-    topUpWallet: 'شحن المحفظة',
-    withdrawFunds: 'سحب الأموال',
-    topUpNow: 'شحن الآن',
-    accountDetails: 'تفاصيل الحساب',
   },
   en: {
     // Navigation
@@ -396,6 +393,8 @@ const translations = {
     pending: 'Pending',
     completed: 'Completed',
     cancelled: 'Cancelled',
+    topUpWallet: 'Top Up Wallet',
+    withdrawFunds: 'Withdraw Funds',
     
     // Crop types
     banana: 'Banana',
@@ -470,12 +469,6 @@ const translations = {
     previous: 'Previous',
     loading: 'Loading...',
     noResults: 'No results found',
-    
-    // Wallet additional translations
-    topUpWallet: 'Top Up Wallet',
-    withdrawFunds: 'Withdraw Funds',
-    topUpNow: 'Top Up Now',
-    accountDetails: 'Account Details',
   }
 };
 
