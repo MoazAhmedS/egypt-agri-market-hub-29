@@ -7,9 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User, TrendingUp, ShoppingCart, Package, X, Wallet, ArrowUp, ArrowDown, CheckCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import ProfileModal from "@/components/modals/ProfileModal";
 import MarkDeliveredModal from "@/components/modals/MarkDeliveredModal";
-import TopUpModal from "@/components/modals/TopUpModal";
 import WithdrawModal from "@/components/modals/WithdrawModal";
 
 interface Order {
@@ -34,10 +34,10 @@ interface Transaction {
 const BuyerDashboard = () => {
   const { t } = useLanguage();
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isMarkDeliveredModalOpen, setIsMarkDeliveredModalOpen] = useState(false);
-  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   
@@ -334,7 +334,7 @@ const BuyerDashboard = () => {
                 <div className="text-right">
                   <div className="text-3xl font-bold">{t('currency')} {walletBalance.toFixed(2)}</div>
                   <div className="flex gap-2 mt-2">
-                    <Button onClick={() => setIsTopUpModalOpen(true)} size="sm">
+                    <Button onClick={() => navigate('/top-up')} size="sm">
                       <ArrowUp className="h-4 w-4 mr-1" />
                       {t('topUpNow')}
                     </Button>
@@ -456,13 +456,6 @@ const BuyerDashboard = () => {
           setSelectedOrder(null);
         }}
         onMarkAsDelivered={handleConfirmDelivery}
-      />
-
-      {/* Top Up Modal */}
-      <TopUpModal
-        isOpen={isTopUpModalOpen}
-        onClose={() => setIsTopUpModalOpen(false)}
-        onTopUp={handleTopUp}
       />
 
       {/* Withdraw Modal */}
