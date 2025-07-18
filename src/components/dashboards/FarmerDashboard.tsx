@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import AddCropModal from "@/components/modals/AddCropModal";
 import ShipOrderModal from "@/components/modals/ShipOrderModal";
 import ProfileModal from "@/components/modals/ProfileModal";
-import TopUpModal from "@/components/modals/TopUpModal";
-import WithdrawModal from "@/components/modals/WithdrawModal";
 import { Link } from "react-router-dom";
 
 interface Crop {
@@ -51,8 +50,6 @@ const FarmerDashboard = () => {
   const [isAddCropModalOpen, setIsAddCropModalOpen] = useState(false);
   const [isShipOrderModalOpen, setIsShipOrderModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
-  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   
   // Subscription state (mock data)
@@ -118,18 +115,17 @@ const FarmerDashboard = () => {
     });
   };
 
-  const handleTopUp = (amount: number, method: string) => {
-    setWalletBalance(prev => prev + amount);
+  const handleTopUp = () => {
     toast({
-      title: "Top Up Successful",
-      description: `${t('currency')} ${amount} has been added to your wallet via ${method}.`,
+      title: "Top Up",
+      description: "Redirecting to payment gateway...",
     });
   };
 
-  const handleWithdraw = (amount: number, bankDetails: string, notes: string) => {
+  const handleWithdraw = () => {
     toast({
-      title: "Withdrawal Request Submitted",
-      description: `Withdrawal request for ${t('currency')} ${amount} has been submitted for approval.`,
+      title: "Withdrawal Request",
+      description: "Your withdrawal request has been submitted for approval.",
     });
   };
 
@@ -333,11 +329,11 @@ const FarmerDashboard = () => {
                 <div className="text-right">
                   <div className="text-3xl font-bold">{t('currency')} {walletBalance.toFixed(2)}</div>
                   <div className="flex gap-2 mt-2">
-                    <Button onClick={() => setIsTopUpModalOpen(true)} size="sm">
+                    <Button onClick={handleTopUp} size="sm">
                       <ArrowUp className="h-4 w-4 mr-1" />
                       {t('topUpNow')}
                     </Button>
-                    <Button onClick={() => setIsWithdrawModalOpen(true)} variant="outline" size="sm">
+                    <Button onClick={handleWithdraw} variant="outline" size="sm">
                       <ArrowDown className="h-4 w-4 mr-1" />
                       {t('withdraw')}
                     </Button>
@@ -507,21 +503,6 @@ const FarmerDashboard = () => {
             description: "Your profile has been updated successfully.",
           });
         }}
-      />
-
-      {/* Top Up Modal */}
-      <TopUpModal
-        isOpen={isTopUpModalOpen}
-        onClose={() => setIsTopUpModalOpen(false)}
-        onTopUp={handleTopUp}
-      />
-
-      {/* Withdraw Modal */}
-      <WithdrawModal
-        isOpen={isWithdrawModalOpen}
-        onClose={() => setIsWithdrawModalOpen(false)}
-        onWithdraw={handleWithdraw}
-        currentBalance={walletBalance}
       />
     </div>
   );
