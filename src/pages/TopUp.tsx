@@ -18,7 +18,6 @@ const TopUp = () => {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [amount, setAmount] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   
   // Billing info state
@@ -38,7 +37,7 @@ const TopUp = () => {
 
   const handleStepOne = (e: React.FormEvent) => {
     e.preventDefault();
-    if (amount && paymentMethod) {
+    if (amount) {
       setCurrentStep(2);
     }
   };
@@ -100,7 +99,10 @@ const TopUp = () => {
         {currentStep === 1 && (
           <Card>
             <CardHeader>
-              <CardTitle>Step 1: Select Amount & Payment Method</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" />
+                Step 1: Select Amount
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleStepOne} className="space-y-6">
@@ -135,28 +137,9 @@ const TopUp = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="payment-method">{t('paymentMethod')}</Label>
-                  <Select value={paymentMethod} onValueChange={setPaymentMethod} required>
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select payment method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="credit-card">
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="h-4 w-4" />
-                          {t('creditCard')}
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="bank-transfer">Bank Transfer</SelectItem>
-                      <SelectItem value="mobile-wallet">Mobile Wallet</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="pt-4">
                   <Button type="submit" className="w-full h-12 text-lg">
-                    Continue to Billing Info
+                    Continue to Credit Card Info
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 </div>
@@ -168,9 +151,12 @@ const TopUp = () => {
         {currentStep === 2 && (
           <Card>
             <CardHeader>
-              <CardTitle>Step 2: Billing Information</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" />
+                Step 2: Credit Card Information
+              </CardTitle>
               <div className="text-sm text-gray-600">
-                Amount: {t('currency')} {amount} | Method: {paymentMethod}
+                Amount: {t('currency')} {amount}
               </div>
             </CardHeader>
             <CardContent>
