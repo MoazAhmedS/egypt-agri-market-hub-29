@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import AddCropModal from "@/components/modals/AddCropModal";
 import ShipOrderModal from "@/components/modals/ShipOrderModal";
 import ProfileModal from "@/components/modals/ProfileModal";
-import TopUpModal from "@/components/modals/TopUpModal";
 import WithdrawModal from "@/components/modals/WithdrawModal";
 import { Link } from "react-router-dom";
 
@@ -51,7 +50,6 @@ const FarmerDashboard = () => {
   const [isAddCropModalOpen, setIsAddCropModalOpen] = useState(false);
   const [isShipOrderModalOpen, setIsShipOrderModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   
@@ -115,23 +113,6 @@ const FarmerDashboard = () => {
     toast({
       title: "Order Shipped",
       description: "Order has been marked as shipped successfully.",
-    });
-  };
-
-  const handleTopUp = (amount: number, method: string) => {
-    setWalletBalance(prev => prev + amount);
-    const newTransaction: Transaction = {
-      id: transactions.length + 1,
-      type: 'topUp',
-      amount: amount,
-      status: 'completed',
-      date: new Date().toISOString().split('T')[0],
-      description: `Wallet top-up via ${method}`
-    };
-    setTransactions(prev => [newTransaction, ...prev]);
-    toast({
-      title: "Top Up Successful",
-      description: `${t('currency')} ${amount} has been added to your wallet.`,
     });
   };
 
@@ -352,10 +333,12 @@ const FarmerDashboard = () => {
                 <div className="text-right">
                   <div className="text-3xl font-bold">{t('currency')} {walletBalance.toFixed(2)}</div>
                   <div className="flex gap-2 mt-2">
-                    <Button onClick={() => setIsTopUpModalOpen(true)} size="sm">
-                      <ArrowUp className="h-4 w-4 mr-1" />
-                      {t('topUpNow')}
-                    </Button>
+                    <Link to="/top-up">
+                      <Button size="sm">
+                        <ArrowUp className="h-4 w-4 mr-1" />
+                        {t('topUpNow')}
+                      </Button>
+                    </Link>
                     <Button onClick={() => setIsWithdrawModalOpen(true)} variant="outline" size="sm">
                       <ArrowDown className="h-4 w-4 mr-1" />
                       {t('withdraw')}
@@ -526,13 +509,6 @@ const FarmerDashboard = () => {
             description: "Your profile has been updated successfully.",
           });
         }}
-      />
-
-      {/* Top Up Modal */}
-      <TopUpModal
-        isOpen={isTopUpModalOpen}
-        onClose={() => setIsTopUpModalOpen(false)}
-        onTopUp={handleTopUp}
       />
 
       {/* Withdraw Modal */}
