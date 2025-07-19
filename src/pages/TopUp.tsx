@@ -18,7 +18,6 @@ const TopUp = () => {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [amount, setAmount] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   
   // Billing info state
@@ -38,7 +37,7 @@ const TopUp = () => {
 
   const handleStepOne = (e: React.FormEvent) => {
     e.preventDefault();
-    if (amount && paymentMethod) {
+    if (amount) {
       setCurrentStep(2);
     }
   };
@@ -50,8 +49,8 @@ const TopUp = () => {
     // Simulate payment processing
     setTimeout(() => {
       toast({
-        title: "Top Up Successful",
-        description: `${t('currency')} ${amount} has been added to your wallet.`,
+        title: t('topUpSuccessful') || "Top Up Successful",
+        description: `${amount} ${t('currency')} ${t('addedToWallet') || 'has been added to your wallet'}.`,
       });
       navigate("/dashboard");
       setIsProcessing(false);
@@ -74,14 +73,14 @@ const TopUp = () => {
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            {currentStep === 1 ? "Back to Dashboard" : "Back to Amount"}
+            {currentStep === 1 ? t('backToDashboard') || "Back to Dashboard" : t('backToAmount') || "Back to Amount"}
           </Button>
           
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
             <Wallet className="h-8 w-8" />
             {t('topUpWallet')}
           </h1>
-          <p className="text-gray-600 mt-2">Add funds to your wallet securely</p>
+          <p className="text-gray-600 mt-2">{t('addFundsSecurely') || 'Add funds to your wallet securely'}</p>
         </div>
 
         {/* Step Indicator */}
@@ -100,7 +99,7 @@ const TopUp = () => {
         {currentStep === 1 && (
           <Card>
             <CardHeader>
-              <CardTitle>Step 1: Select Amount & Payment Method</CardTitle>
+              <CardTitle>{t('selectAmount') || 'Step 1: Select Amount'}</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleStepOne} className="space-y-6">
@@ -109,7 +108,7 @@ const TopUp = () => {
                   <Input
                     id="amount"
                     type="number"
-                    placeholder="Enter amount"
+                    placeholder={t('enterAmount') || "Enter amount"}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     min="1"
@@ -119,7 +118,7 @@ const TopUp = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Quick Select Amount</Label>
+                  <Label>{t('quickSelectAmount') || 'Quick Select Amount'}</Label>
                   <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
                     {predefinedAmounts.map((value) => (
                       <Button
@@ -129,34 +128,15 @@ const TopUp = () => {
                         className="h-12"
                         onClick={() => setAmount(value.toString())}
                       >
-                        {t('currency')} {value}
+                        {value} {t('currency')}
                       </Button>
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="payment-method">{t('paymentMethod')}</Label>
-                  <Select value={paymentMethod} onValueChange={setPaymentMethod} required>
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select payment method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="credit-card">
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="h-4 w-4" />
-                          {t('creditCard')}
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="bank-transfer">Bank Transfer</SelectItem>
-                      <SelectItem value="mobile-wallet">Mobile Wallet</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="pt-4">
                   <Button type="submit" className="w-full h-12 text-lg">
-                    Continue to Billing Info
+                    {t('continueToBilling') || 'Continue to Billing Info'}
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 </div>
@@ -168,16 +148,19 @@ const TopUp = () => {
         {currentStep === 2 && (
           <Card>
             <CardHeader>
-              <CardTitle>Step 2: Billing Information</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" />
+                {t('billingInformation') || 'Step 2: Billing Information'}
+              </CardTitle>
               <div className="text-sm text-gray-600">
-                Amount: {t('currency')} {amount} | Method: {paymentMethod}
+                {t('amount')}: {amount} {t('currency')} | {t('method')}: {t('creditCard')}
               </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleFinalSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="cardholderName">Cardholder Name</Label>
+                    <Label htmlFor="cardholderName">{t('cardholderName') || 'Cardholder Name'}</Label>
                     <Input
                       id="cardholderName"
                       placeholder="John Doe"
@@ -187,7 +170,7 @@ const TopUp = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t('email')}</Label>
                     <Input
                       id="email"
                       type="email"
@@ -200,7 +183,7 @@ const TopUp = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="cardNumber">Card Number</Label>
+                  <Label htmlFor="cardNumber">{t('cardNumber')}</Label>
                   <Input
                     id="cardNumber"
                     placeholder="1234 5678 9012 3456"
@@ -212,7 +195,7 @@ const TopUp = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="expiryDate">Expiry Date</Label>
+                    <Label htmlFor="expiryDate">{t('expiryDate')}</Label>
                     <Input
                       id="expiryDate"
                       placeholder="MM/YY"
@@ -222,7 +205,7 @@ const TopUp = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="cvv">CVV</Label>
+                    <Label htmlFor="cvv">{t('cvv')}</Label>
                     <Input
                       id="cvv"
                       placeholder="123"
@@ -234,7 +217,7 @@ const TopUp = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
+                  <Label htmlFor="address">{t('address')}</Label>
                   <Input
                     id="address"
                     placeholder="123 Main Street"
@@ -246,7 +229,7 @@ const TopUp = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
+                    <Label htmlFor="city">{t('city')}</Label>
                     <Input
                       id="city"
                       placeholder="New York"
@@ -256,7 +239,7 @@ const TopUp = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="postalCode">Postal Code</Label>
+                    <Label htmlFor="postalCode">{t('postalCode')}</Label>
                     <Input
                       id="postalCode"
                       placeholder="10001"
@@ -266,10 +249,10 @@ const TopUp = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="country">Country</Label>
+                    <Label htmlFor="country">{t('country') || 'Country'}</Label>
                     <Select value={billingInfo.country} onValueChange={(value) => updateBillingInfo('country', value)} required>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select country" />
+                        <SelectValue placeholder={t('selectCountry') || "Select country"} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="us">United States</SelectItem>
@@ -283,15 +266,15 @@ const TopUp = () => {
 
                 <div className="border-t pt-6">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-lg font-semibold">Total Amount:</span>
-                    <span className="text-2xl font-bold">{t('currency')} {amount}</span>
+                    <span className="text-lg font-semibold">{t('totalAmount') || 'Total Amount'}:</span>
+                    <span className="text-2xl font-bold">{amount} {t('currency')}</span>
                   </div>
                   <Button 
                     type="submit" 
                     disabled={isProcessing}
                     className="w-full h-12 text-lg"
                   >
-                    {isProcessing ? "Processing Payment..." : `Charge ${t('currency')} ${amount}`}
+                    {isProcessing ? (t('processingPayment') || "Processing Payment...") : `${t('charge') || 'Charge'} ${amount} ${t('currency')}`}
                   </Button>
                 </div>
               </form>

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'ar' | 'en';
@@ -239,6 +238,24 @@ const translations = {
     previous: 'السابق',
     loading: 'جاري التحميل...',
     noResults: 'لا توجد نتائج',
+
+    // Top Up specific translations
+    topUpSuccessful: 'تم الشحن بنجاح',
+    addedToWallet: 'تم إضافته إلى محفظتك',
+    backToDashboard: 'العودة للوحة التحكم',
+    backToAmount: 'العودة للمبلغ',
+    addFundsSecurely: 'أضف الأموال إلى محفظتك بأمان',
+    selectAmount: 'الخطوة 1: اختر المبلغ',
+    enterAmount: 'أدخل المبلغ',
+    quickSelectAmount: 'اختيار سريع للمبلغ',
+    continueToBilling: 'متابعة لمعلومات الفوترة',
+    billingInformation: 'الخطوة 2: معلومات الفوترة',
+    method: 'الطريقة',
+    country: 'البلد',
+    selectCountry: 'اختر البلد',
+    totalAmount: 'إجمالي المبلغ',
+    charge: 'شحن',
+    processingPayment: 'جاري معالجة الدفع...',
   },
   en: {
     // Navigation
@@ -469,6 +486,24 @@ const translations = {
     previous: 'Previous',
     loading: 'Loading...',
     noResults: 'No results found',
+
+    // Top Up specific translations
+    topUpSuccessful: 'Top Up Successful',
+    addedToWallet: 'has been added to your wallet',
+    backToDashboard: 'Back to Dashboard',
+    backToAmount: 'Back to Amount',
+    addFundsSecurely: 'Add funds to your wallet securely',
+    selectAmount: 'Step 1: Select Amount',
+    enterAmount: 'Enter amount',
+    quickSelectAmount: 'Quick Select Amount',
+    continueToBilling: 'Continue to Billing Info',
+    billingInformation: 'Step 2: Billing Information',
+    method: 'Method',
+    country: 'Country',
+    selectCountry: 'Select country',
+    totalAmount: 'Total Amount',
+    charge: 'Charge',
+    processingPayment: 'Processing Payment...',
   }
 };
 
