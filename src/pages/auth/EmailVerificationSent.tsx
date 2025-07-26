@@ -1,33 +1,16 @@
 
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, ArrowLeft, RefreshCw } from "lucide-react";
+import { Mail, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { toast } from "@/hooks/use-toast";
 
 const EmailVerificationSent = () => {
   const { language, t } = useLanguage();
-  const [isResending, setIsResending] = useState(false);
   
   // Get email from URL params or localStorage
   const urlParams = new URLSearchParams(window.location.search);
   const email = urlParams.get('email') || localStorage.getItem('signupEmail') || 'your email';
-
-  const handleResendEmail = async () => {
-    setIsResending(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsResending(false);
-    
-    toast({
-      title: language === 'ar' ? 'تم إعادة الإرسال' : 'Email Resent',
-      description: language === 'ar' 
-        ? 'تم إعادة إرسال رابط التحقق إلى بريدك الإلكتروني'
-        : 'Verification link has been resent to your email',
-    });
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -70,19 +53,6 @@ const EmailVerificationSent = () => {
             </div>
 
             <div className="space-y-4">
-              <Button
-                onClick={handleResendEmail}
-                disabled={isResending}
-                variant="outline"
-                className="w-full"
-              >
-                <RefreshCw className={`h-4 w-4 ${language === 'ar' ? 'ml-2' : 'mr-2'} ${isResending ? 'animate-spin' : ''}`} />
-                {isResending 
-                  ? (language === 'ar' ? 'جاري الإرسال...' : 'Resending...')
-                  : (language === 'ar' ? 'إعادة إرسال البريد' : 'Resend Email')
-                }
-              </Button>
-              
               <Button asChild variant="ghost" className="w-full">
                 <Link to="/login">
                   {language === 'ar' ? 'العودة لتسجيل الدخول' : 'Back to Login'}
