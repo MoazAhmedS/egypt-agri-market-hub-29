@@ -8,6 +8,9 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import Login from "./pages/auth/Login";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import PasswordResetSuccess from "./pages/auth/PasswordResetSuccess";
+import EmailVerificationSent from "./pages/auth/EmailVerificationSent";
+import EmailVerified from "./pages/auth/EmailVerified";
 import SignupRole from "./pages/auth/SignupRole";
 import SignupBasicInfo from "./pages/auth/SignupBasicInfo";
 import SignupLocation from "./pages/auth/SignupLocation";
@@ -35,6 +38,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/password-reset-success" element={<PasswordResetSuccess />} />
+            <Route path="/email-verification-sent" element={<EmailVerificationSent />} />
+            <Route path="/email-verified" element={<EmailVerified />} />
             <Route path="/signup" element={<SignupRole />} />
             <Route path="/signup/basic-info" element={<SignupBasicInfo />} />
             <Route path="/signup/location" element={<SignupLocation />} />
