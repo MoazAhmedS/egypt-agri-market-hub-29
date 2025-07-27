@@ -15,6 +15,7 @@ import SignupRole from "./pages/auth/SignupRole";
 import SignupBasicInfo from "./pages/auth/SignupBasicInfo";
 import SignupLocation from "./pages/auth/SignupLocation";
 import SignupDocuments from "./pages/auth/SignupDocuments";
+import DocumentUpload from "./pages/DocumentUpload";
 import BrowseProducts from "./pages/BrowseProducts";
 import About from "./pages/About";
 import ProductDetails from "./pages/ProductDetails";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/signup/basic-info" element={<SignupBasicInfo />} />
             <Route path="/signup/location" element={<SignupLocation />} />
             <Route path="/signup/documents" element={<SignupDocuments />} />
+            <Route path="/document-upload" element={<DocumentUpload />} />
             <Route path="/browse" element={<BrowseProducts />} />
             <Route path="/about" element={<About />} />
             <Route path="/product/:id" element={<ProductDetails />} />
