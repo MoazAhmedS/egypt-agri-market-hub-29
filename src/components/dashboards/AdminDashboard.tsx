@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -242,7 +241,6 @@ const AdminDashboard = () => {
                     <TableHead>{t('name')}</TableHead>
                     <TableHead>{t('email')}</TableHead>
                     <TableHead>{t('role')}</TableHead>
-                    <TableHead>{t('documents')}</TableHead>
                     <TableHead>{t('actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -254,7 +252,6 @@ const AdminDashboard = () => {
                       <TableCell>
                         <Badge variant="outline">{user.role}</Badge>
                       </TableCell>
-                      <TableCell>{user.documents} {t('files')}</TableCell>
                       <TableCell className="space-x-2">
                         <Button 
                           size="sm" 
@@ -546,8 +543,6 @@ const AdminDashboard = () => {
         isOpen={userUpdateModal.isOpen}
         onClose={() => setUserUpdateModal({ isOpen: false, user: null })}
         onUpdate={handleUserUpdate}
-        onBan={handleUserBan}
-        onDelete={handleUserDelete}
       />
 
       <CropReviewModal
