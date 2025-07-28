@@ -146,64 +146,61 @@ const FarmerDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="overview">{t('salesAnalytics')}</TabsTrigger>
+      {/* Sales Analytics - Always visible at top */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{t('currency')} {totalSales}</div>
+            <p className="text-xs text-muted-foreground">Last 30 days</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalOrders}</div>
+            <p className="text-xs text-muted-foreground">All time</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{t('pendingOrders')}</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{pendingOrders}</div>
+            <p className="text-xs text-muted-foreground">Awaiting action</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Crops</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activeCrops}</div>
+            <p className="text-xs text-muted-foreground">Currently listed</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="crops" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="crops">{t('cropManagement')}</TabsTrigger>
           <TabsTrigger value="orders">{t('orderTracking')}</TabsTrigger>
           <TabsTrigger value="wallet">{t('wallet')}</TabsTrigger>
           <TabsTrigger value="profile">{t('profileManagement')}</TabsTrigger>
           <TabsTrigger value="subscription">{t('subscription')}</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          {/* Analytics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{t('currency')} {totalSales}</div>
-                <p className="text-xs text-muted-foreground">Last 30 days</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalOrders}</div>
-                <p className="text-xs text-muted-foreground">All time</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('pendingOrders')}</CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{pendingOrders}</div>
-                <p className="text-xs text-muted-foreground">Awaiting action</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Crops</CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{activeCrops}</div>
-                <p className="text-xs text-muted-foreground">Currently listed</p>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
 
         <TabsContent value="crops" className="space-y-4">
           <Card>
@@ -419,16 +416,16 @@ const FarmerDashboard = () => {
                   <p className="text-lg">Mohamed Hassan</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">{t('email')}</label>
-                  <p className="text-lg">mohamed@example.com</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium">{t('location')}</label>
-                  <p className="text-lg">Giza, Egypt</p>
-                </div>
-                <div>
                   <label className="text-sm font-medium">Phone</label>
                   <p className="text-lg">+20 123 456 789</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Governorate</label>
+                  <p className="text-lg">Giza</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Address</label>
+                  <p className="text-lg">123 Main Street, Giza</p>
                 </div>
               </div>
             </CardContent>

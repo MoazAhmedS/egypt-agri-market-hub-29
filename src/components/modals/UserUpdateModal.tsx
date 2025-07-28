@@ -15,6 +15,9 @@ interface User {
   role: string;
   status: string;
   joinDate: string;
+  governorate?: string;
+  address?: string;
+  phone?: string;
 }
 
 interface UserUpdateModalProps {
@@ -30,6 +33,14 @@ const UserUpdateModal = ({ user, isOpen, onClose, onUpdate, onBan, onDelete }: U
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<User>>({});
+
+  const governorates = [
+    "القاهرة", "الجيزة", "الإسكندرية", "الدقهلية", "الشرقية", "القليوبية",
+    "كفر الشيخ", "الغربية", "المنوفية", "البحيرة", "الإسماعيلية", "بور سعيد",
+    "السويس", "شمال سيناء", "جنوب سيناء", "الفيوم", "بني سويف", "المنيا",
+    "أسيوط", "سوهاج", "قنا", "الأقصر", "أسوان", "البحر الأحمر", "الوادي الجديد",
+    "مطروح", "دمياط"
+  ];
 
   if (!user) return null;
 
@@ -123,6 +134,41 @@ const UserUpdateModal = ({ user, isOpen, onClose, onUpdate, onBan, onDelete }: U
           </div>
 
           <div>
+            <label className="text-sm font-medium">Phone</label>
+            <Input 
+              defaultValue={user.phone || ''}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Governorate</label>
+            <Select 
+              defaultValue={user.governorate || ''}
+              onValueChange={(value) => setFormData({ ...formData, governorate: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Governorate" />
+              </SelectTrigger>
+              <SelectContent>
+                {governorates.map((gov) => (
+                  <SelectItem key={gov} value={gov}>
+                    {gov}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">Address</label>
+            <Input 
+              defaultValue={user.address || ''}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+            />
+          </div>
+
+          <div>
             <label className="text-sm font-medium">Role</label>
             <Select 
               defaultValue={user.role}
@@ -149,7 +195,11 @@ const UserUpdateModal = ({ user, isOpen, onClose, onUpdate, onBan, onDelete }: U
 
           <div>
             <label className="text-sm font-medium">Join Date</label>
-            <p className="text-sm text-gray-600">{user.joinDate}</p>
+            <Input 
+              value={user.joinDate}
+              readOnly
+              className="bg-gray-100"
+            />
           </div>
         </div>
 

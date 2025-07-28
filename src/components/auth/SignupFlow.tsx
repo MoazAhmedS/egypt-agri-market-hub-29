@@ -5,7 +5,6 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import RoleSelection from "./steps/RoleSelection";
 import BasicInfo from "./steps/BasicInfo";
 import LocationInfo from "./steps/LocationInfo";
-import DocumentUpload from "./steps/DocumentUpload";
 
 interface SignupFlowProps {
   onBack: () => void;
@@ -21,9 +20,6 @@ export interface SignupData {
   confirmPassword: string;
   governorate: string;
   address: string;
-  idFront: File | null;
-  idBack: File | null;
-  selfie: File | null;
 }
 
 const SignupFlow = ({ onBack, onClose }: SignupFlowProps) => {
@@ -36,17 +32,13 @@ const SignupFlow = ({ onBack, onClose }: SignupFlowProps) => {
     password: "",
     confirmPassword: "",
     governorate: "",
-    address: "",
-    idFront: null,
-    idBack: null,
-    selfie: null
+    address: ""
   });
 
   const steps = [
     { title: "نوع الحساب", component: RoleSelection },
     { title: "المعلومات الأساسية", component: BasicInfo },
-    { title: "معلومات الموقع", component: LocationInfo },
-    { title: "تحميل الوثائق", component: DocumentUpload }
+    { title: "معلومات الموقع", component: LocationInfo }
   ];
 
   const currentStepData = steps[currentStep];
@@ -85,8 +77,6 @@ const SignupFlow = ({ onBack, onClose }: SignupFlowProps) => {
                signupData.password && signupData.password === signupData.confirmPassword;
       case 2:
         return signupData.governorate && signupData.address;
-      case 3:
-        return signupData.idFront && signupData.idBack && signupData.selfie;
       default:
         return false;
     }
