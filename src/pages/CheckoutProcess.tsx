@@ -88,10 +88,10 @@ const CheckoutProcess = () => {
 
         {/* Progress Steps */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center max-w-md mx-auto">
             {steps.map((step, index) => (
               <div key={step.number} className="flex items-center">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                   currentStep >= step.number 
                     ? 'bg-green-600 border-green-600 text-white' 
                     : 'border-gray-300 text-gray-400'
@@ -102,13 +102,13 @@ const CheckoutProcess = () => {
                     step.number
                   )}
                 </div>
-                <span className={`ml-2 text-sm font-medium ${
+                <span className={`mx-2 text-sm font-medium ${
                   currentStep >= step.number ? 'text-green-600' : 'text-gray-400'
                 }`}>
                   {step.title}
                 </span>
                 {index < steps.length - 1 && (
-                  <div className={`mx-4 h-1 w-16 ${
+                  <div className={`mx-4 h-1 w-20 ${
                     currentStep > step.number ? 'bg-green-600' : 'bg-gray-300'
                   }`} />
                 )}
