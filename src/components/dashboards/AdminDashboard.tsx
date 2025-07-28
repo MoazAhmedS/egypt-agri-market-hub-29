@@ -4,6 +4,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Users, 
   ShoppingCart, 
@@ -16,7 +18,8 @@ import {
   Edit,
   Trash2,
   DollarSign,
-  Wallet
+  Wallet,
+  Search
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import UserReviewModal from "@/components/modals/UserReviewModal";
@@ -33,6 +36,10 @@ const AdminDashboard = () => {
   const [cropReviewModal, setCropReviewModal] = useState<{ isOpen: boolean; crop: any }>({ isOpen: false, crop: null });
   const [orderReviewModal, setOrderReviewModal] = useState<{ isOpen: boolean; order: any }>({ isOpen: false, order: null });
 
+  // Search and filter states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+
   // Mock data - in real app this would come from API
   const [pendingUsers, setPendingUsers] = useState([
     { id: 1, name: "Ahmed Hassan", email: "ahmed@example.com", role: "Farmer", status: "pending", documents: 3 },
@@ -44,6 +51,8 @@ const AdminDashboard = () => {
     { id: 1, name: "Mohamed Ibrahim", email: "mohamed@example.com", role: "Farmer", status: "active", joinDate: "2024-01-15" },
     { id: 2, name: "Fatma Ahmed", email: "fatma@example.com", role: "Buyer", status: "active", joinDate: "2024-02-10" },
     { id: 3, name: "Khaled Salem", email: "khaled@example.com", role: "Farmer", status: "banned", joinDate: "2024-01-20" },
+    { id: 4, name: "Sara Mohamed", email: "sara@example.com", role: "Buyer", status: "active", joinDate: "2024-01-25" },
+    { id: 5, name: "Ahmed Hassan", email: "ahmed@example.com", role: "Farmer", status: "active", joinDate: "2024-02-01" },
   ]);
 
   const [pendingCrops, setPendingCrops] = useState([
@@ -114,6 +123,14 @@ const AdminDashboard = () => {
     topCrop: "Tomatoes",
     activeFarmers: 28
   };
+
+  // Filter users based on search term and role
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+    return matchesSearch && matchesRole;
+  });
 
   // Handler functions
   const handleUserApprove = (userId: number) => {
@@ -293,6 +310,29 @@ const AdminDashboard = () => {
               <CardDescription>{t('updateDeleteBanUsers')}</CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Search and Filter Section */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search by name or email..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={roleFilter} onValueChange={setRoleFilter}>
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <SelectValue placeholder="Filter by role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Roles</SelectItem>
+                    <SelectItem value="Farmer">Farmer</SelectItem>
+                    <SelectItem value="Buyer">Buyer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -305,44 +345,52 @@ const AdminDashboard = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{user.role}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={user.status === 'active' ? 'default' : 'destructive'}>
-                          {t(user.status)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{user.joinDate}</TableCell>
-                      <TableCell className="space-x-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => setUserUpdateModal({ isOpen: true, user })}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => handleUserBan(user.id)}
-                        >
-                          <Ban className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="destructive" 
-                          onClick={() => handleUserDelete(user.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                  {filteredUsers.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">
+                        No users found
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    filteredUsers.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{user.role}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={user.status === 'active' ? 'default' : 'destructive'}>
+                            {t(user.status)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{user.joinDate}</TableCell>
+                        <TableCell className="space-x-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => setUserUpdateModal({ isOpen: true, user })}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleUserBan(user.id)}
+                          >
+                            <Ban className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive" 
+                            onClick={() => handleUserDelete(user.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
