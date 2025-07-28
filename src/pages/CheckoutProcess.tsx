@@ -3,9 +3,6 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Header from "@/components/Header";
@@ -18,20 +15,6 @@ interface OrderData {
     price: number;
     quantity: number;
     inspectionFee: number;
-  };
-  customer: {
-    fullName: string;
-    phoneNumber: string;
-    address: string;
-    city: string;
-    postalCode: string;
-  };
-  payment: {
-    method: string;
-    cardNumber?: string;
-    expiryDate?: string;
-    cvv?: string;
-    cardholderName?: string;
   };
 }
 
@@ -49,51 +32,21 @@ const CheckoutProcess = () => {
       price: 15,
       quantity: 5,
       inspectionFee: 200
-    },
-    customer: {
-      fullName: "",
-      phoneNumber: "",
-      address: "",
-      city: "",
-      postalCode: ""
-    },
-    payment: {
-      method: "cashOnDelivery"
     }
   });
 
   const totalAmount = (orderData.product.price * orderData.product.quantity) + orderData.product.inspectionFee + 50; // 50 delivery fee
 
   const handleNextStep = () => {
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
+    if (currentStep === 1) {
+      setCurrentStep(4); // Skip to step 4
     }
   };
 
   const handlePrevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+    if (currentStep === 4) {
+      setCurrentStep(1); // Go back to step 1
     }
-  };
-
-  const handleCustomerInfoChange = (field: string, value: string) => {
-    setOrderData(prev => ({
-      ...prev,
-      customer: {
-        ...prev.customer,
-        [field]: value
-      }
-    }));
-  };
-
-  const handlePaymentChange = (field: string, value: string) => {
-    setOrderData(prev => ({
-      ...prev,
-      payment: {
-        ...prev.payment,
-        [field]: value
-      }
-    }));
   };
 
   const handleConfirmOrder = () => {
@@ -114,26 +67,8 @@ const CheckoutProcess = () => {
     }, 1000);
   };
 
-  const isStepValid = () => {
-    switch (currentStep) {
-      case 2:
-        return orderData.customer.fullName && orderData.customer.phoneNumber && 
-               orderData.customer.address && orderData.customer.city;
-      case 3:
-        if (orderData.payment.method === "creditCard") {
-          return orderData.payment.cardNumber && orderData.payment.expiryDate && 
-                 orderData.payment.cvv && orderData.payment.cardholderName;
-        }
-        return true;
-      default:
-        return true;
-    }
-  };
-
   const steps = [
     { number: 1, title: t('orderInformation') },
-    { number: 2, title: t('deliveryAddress') },
-    { number: 3, title: t('paymentMethod') },
     { number: 4, title: t('orderConfirmation') }
   ];
 
@@ -187,7 +122,7 @@ const CheckoutProcess = () => {
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>{steps[currentStep - 1].title}</CardTitle>
+                <CardTitle>{steps.find(s => s.number === currentStep)?.title}</CardTitle>
               </CardHeader>
               <CardContent>
                 {/* Step 1: Order Information */}
@@ -216,125 +151,6 @@ const CheckoutProcess = () => {
                   </div>
                 )}
 
-                {/* Step 2: Delivery Address */}
-                {currentStep === 2 && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="fullName">{t('fullName')}</Label>
-                        <Input
-                          id="fullName"
-                          value={orderData.customer.fullName}
-                          onChange={(e) => handleCustomerInfoChange('fullName', e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="phoneNumber">{t('phoneNumber')}</Label>
-                        <Input
-                          id="phoneNumber"
-                          value={orderData.customer.phoneNumber}
-                          onChange={(e) => handleCustomerInfoChange('phoneNumber', e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="address">{t('address')}</Label>
-                      <Input
-                        id="address"
-                        value={orderData.customer.address}
-                        onChange={(e) => handleCustomerInfoChange('address', e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="city">{t('city')}</Label>
-                        <Input
-                          id="city"
-                          value={orderData.customer.city}
-                          onChange={(e) => handleCustomerInfoChange('city', e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="postalCode">{t('postalCode')}</Label>
-                        <Input
-                          id="postalCode"
-                          value={orderData.customer.postalCode}
-                          onChange={(e) => handleCustomerInfoChange('postalCode', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Step 3: Payment Method */}
-                {currentStep === 3 && (
-                  <div className="space-y-6">
-                    <RadioGroup
-                      value={orderData.payment.method}
-                      onValueChange={(value) => handlePaymentChange('method', value)}
-                    >
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                        <RadioGroupItem value="cashOnDelivery" id="cashOnDelivery" />
-                        <Label htmlFor="cashOnDelivery" className="font-medium">
-                          {t('cashOnDelivery')}
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2 p-4 border rounded-lg">
-                        <RadioGroupItem value="creditCard" id="creditCard" />
-                        <Label htmlFor="creditCard" className="font-medium">
-                          {t('creditCard')}
-                        </Label>
-                      </div>
-                    </RadioGroup>
-
-                    {orderData.payment.method === 'creditCard' && (
-                      <div className="space-y-4 p-4 border rounded-lg bg-gray-50">
-                        <div>
-                          <Label htmlFor="cardNumber">{t('cardNumber')}</Label>
-                          <Input
-                            id="cardNumber"
-                            placeholder="1234 5678 9012 3456"
-                            value={orderData.payment.cardNumber}
-                            onChange={(e) => handlePaymentChange('cardNumber', e.target.value)}
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <Label htmlFor="expiryDate">{t('expiryDate')}</Label>
-                            <Input
-                              id="expiryDate"
-                              placeholder="MM/YY"
-                              value={orderData.payment.expiryDate}
-                              onChange={(e) => handlePaymentChange('expiryDate', e.target.value)}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="cvv">{t('cvv')}</Label>
-                            <Input
-                              id="cvv"
-                              placeholder="123"
-                              value={orderData.payment.cvv}
-                              onChange={(e) => handlePaymentChange('cvv', e.target.value)}
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <Label htmlFor="cardholderName">{t('cardholderName')}</Label>
-                          <Input
-                            id="cardholderName"
-                            value={orderData.payment.cardholderName}
-                            onChange={(e) => handlePaymentChange('cardholderName', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
                 {/* Step 4: Order Confirmation */}
                 {currentStep === 4 && (
                   <div className="space-y-6">
@@ -359,28 +175,6 @@ const CheckoutProcess = () => {
                         </div>
                       </div>
                     </div>
-
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-lg">{t('deliveryAddress')}</h3>
-                      <div className="p-4 border rounded-lg bg-gray-50">
-                        <p><strong>{t('fullName')}:</strong> {orderData.customer.fullName}</p>
-                        <p><strong>{t('phoneNumber')}:</strong> {orderData.customer.phoneNumber}</p>
-                        <p><strong>{t('address')}:</strong> {orderData.customer.address}</p>
-                        <p><strong>{t('city')}:</strong> {orderData.customer.city}</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-lg">{t('paymentMethod')}</h3>
-                      <div className="p-4 border rounded-lg bg-gray-50">
-                        <p>
-                          {orderData.payment.method === 'cashOnDelivery' 
-                            ? t('cashOnDelivery') 
-                            : t('creditCard')
-                          }
-                        </p>
-                      </div>
-                    </div>
                   </div>
                 )}
 
@@ -396,10 +190,9 @@ const CheckoutProcess = () => {
                     {t('previous')}
                   </Button>
                   
-                  {currentStep < 4 ? (
+                  {currentStep === 1 ? (
                     <Button
                       onClick={handleNextStep}
-                      disabled={!isStepValid()}
                       className="flex items-center gap-2"
                     >
                       {t('next')}
