@@ -190,122 +190,115 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       {/* Analytics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('completedOrders30Days')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('completedOrders30Days')}</CardTitle>
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">{analytics.completedOrders}</div>
+            <div className="text-2xl font-bold">{analytics.completedOrders}</div>
             <p className="text-xs text-muted-foreground">+12% from last month</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('totalPayments30Days')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('totalPayments30Days')}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">{t('currency')} {analytics.totalPayments.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{t('currency')} {analytics.totalPayments.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">+8% from last month</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('mostOrderedCrop')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('mostOrderedCrop')}</CardTitle>
             <Wheat className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">{analytics.topCrop}</div>
+            <div className="text-2xl font-bold">{analytics.topCrop}</div>
             <p className="text-xs text-muted-foreground">35% of all orders</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">{t('activeFarmers')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('activeFarmers')}</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">{analytics.activeFarmers}</div>
+            <div className="text-2xl font-bold">{analytics.activeFarmers}</div>
             <p className="text-xs text-muted-foreground">With completed orders</p>
           </CardContent>
         </Card>
       </div>
 
       <Tabs defaultValue="pending-users" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
-          <TabsTrigger value="pending-users" className="text-xs sm:text-sm px-2 sm:px-3">{t('userVerification')}</TabsTrigger>
-          <TabsTrigger value="manage-users" className="text-xs sm:text-sm px-2 sm:px-3">{t('userManagement')}</TabsTrigger>
-          <TabsTrigger value="pending-crops" className="text-xs sm:text-sm px-2 sm:px-3">{t('cropReview')}</TabsTrigger>
-          <TabsTrigger value="pending-orders" className="text-xs sm:text-sm px-2 sm:px-3">{t('ordersOnHold')}</TabsTrigger>
-          <TabsTrigger value="withdrawal-requests" className="text-xs sm:text-sm px-2 sm:px-3">{t('withdrawalRequests')}</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="pending-users">{t('userVerification')}</TabsTrigger>
+          <TabsTrigger value="manage-users">{t('userManagement')}</TabsTrigger>
+          <TabsTrigger value="pending-crops">{t('cropReview')}</TabsTrigger>
+          <TabsTrigger value="pending-orders">{t('ordersOnHold')}</TabsTrigger>
+          <TabsTrigger value="withdrawal-requests">{t('withdrawalRequests')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending-users" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">{t('userVerification')}</CardTitle>
-              <CardDescription className="text-sm">{t('reviewVerifyRegistrations')}</CardDescription>
+              <CardTitle>{t('userVerification')}</CardTitle>
+              <CardDescription>{t('reviewVerifyRegistrations')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-xs sm:text-sm">{t('name')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('email')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('role')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('actions')}</TableHead>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('name')}</TableHead>
+                    <TableHead>{t('email')}</TableHead>
+                    <TableHead>{t('role')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {pendingUsers.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell className="font-medium">{user.name}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{user.role}</Badge>
+                      </TableCell>
+                      <TableCell className="space-x-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setUserReviewModal({ isOpen: true, user })}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          {t('review')}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={() => handleUserApprove(user.id)}
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          {t('approve')}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => handleUserReject(user.id)}
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          {t('reject')}
+                        </Button>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {pendingUsers.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell className="font-medium text-xs sm:text-sm">{user.name}</TableCell>
-                        <TableCell className="text-xs sm:text-sm">{user.email}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-xs">{user.role}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              className="text-xs"
-                              onClick={() => setUserReviewModal({ isOpen: true, user })}
-                            >
-                              <Eye className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('review')}</span>
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="default"
-                              className="text-xs"
-                              onClick={() => handleUserApprove(user.id)}
-                            >
-                              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('approve')}</span>
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="destructive"
-                              className="text-xs"
-                              onClick={() => handleUserReject(user.id)}
-                            >
-                              <XCircle className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('reject')}</span>
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
@@ -313,8 +306,8 @@ const AdminDashboard = () => {
         <TabsContent value="manage-users" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">{t('userManagement')}</CardTitle>
-              <CardDescription className="text-sm">{t('updateDeleteBanUsers')}</CardDescription>
+              <CardTitle>{t('userManagement')}</CardTitle>
+              <CardDescription>{t('updateDeleteBanUsers')}</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Search and Filter Section */}
@@ -325,7 +318,7 @@ const AdminDashboard = () => {
                     placeholder="Search by name or email..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 text-sm"
+                    className="pl-10"
                   />
                 </div>
                 <Select value={roleFilter} onValueChange={setRoleFilter}>
@@ -340,73 +333,66 @@ const AdminDashboard = () => {
                 </Select>
               </div>
 
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('name')}</TableHead>
+                    <TableHead>{t('email')}</TableHead>
+                    <TableHead>{t('role')}</TableHead>
+                    <TableHead>{t('status')}</TableHead>
+                    <TableHead>{t('joinDate')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredUsers.length === 0 ? (
                     <TableRow>
-                      <TableHead className="text-xs sm:text-sm">{t('name')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('email')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('role')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('status')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('joinDate')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('actions')}</TableHead>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">
+                        No users found
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredUsers.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center text-muted-foreground text-sm">
-                          No users found
+                  ) : (
+                    filteredUsers.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{user.role}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={user.status === 'active' ? 'default' : 'destructive'}>
+                            {t(user.status)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{user.joinDate}</TableCell>
+                        <TableCell className="space-x-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => setUserUpdateModal({ isOpen: true, user })}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => handleUserBan(user.id)}
+                          >
+                            <Ban className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive" 
+                            onClick={() => handleUserDelete(user.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </TableCell>
                       </TableRow>
-                    ) : (
-                      filteredUsers.map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell className="font-medium text-xs sm:text-sm">{user.name}</TableCell>
-                          <TableCell className="text-xs sm:text-sm">{user.email}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="text-xs">{user.role}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={user.status === 'active' ? 'default' : 'destructive'} className="text-xs">
-                              {t(user.status)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-xs sm:text-sm">{user.joinDate}</TableCell>
-                          <TableCell>
-                            <div className="flex flex-col sm:flex-row gap-2">
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                className="text-xs"
-                                onClick={() => setUserUpdateModal({ isOpen: true, user })}
-                              >
-                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                className="text-xs"
-                                onClick={() => handleUserBan(user.id)}
-                              >
-                                <Ban className="h-3 w-3 sm:h-4 sm:w-4" />
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="destructive"
-                                className="text-xs"
-                                onClick={() => handleUserDelete(user.id)}
-                              >
-                                <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
@@ -414,68 +400,61 @@ const AdminDashboard = () => {
         <TabsContent value="pending-crops" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">{t('cropReview')}</CardTitle>
-              <CardDescription className="text-sm">{t('acceptRejectCropListings')}</CardDescription>
+              <CardTitle>{t('cropReview')}</CardTitle>
+              <CardDescription>{t('acceptRejectCropListings')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-xs sm:text-sm">{t('cropName')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('farmer')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('category')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('price')} ({t('currency')})</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('quantity')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('actions')}</TableHead>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('cropName')}</TableHead>
+                    <TableHead>{t('farmer')}</TableHead>
+                    <TableHead>{t('category')}</TableHead>
+                    <TableHead>{t('price')} ({t('currency')})</TableHead>
+                    <TableHead>{t('quantity')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {pendingCrops.map((crop) => (
+                    <TableRow key={crop.id}>
+                      <TableCell className="font-medium">{crop.name}</TableCell>
+                      <TableCell>{crop.farmer}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{crop.category}</Badge>
+                      </TableCell>
+                      <TableCell>{crop.price}</TableCell>
+                      <TableCell>{crop.quantity}</TableCell>
+                      <TableCell className="space-x-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setCropReviewModal({ isOpen: true, crop })}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          {t('review')}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={() => handleCropAccept(crop.id)}
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          {t('approve')}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => handleCropReject(crop.id)}
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          {t('reject')}
+                        </Button>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {pendingCrops.map((crop) => (
-                      <TableRow key={crop.id}>
-                        <TableCell className="font-medium text-xs sm:text-sm">{crop.name}</TableCell>
-                        <TableCell className="text-xs sm:text-sm">{crop.farmer}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-xs">{crop.category}</Badge>
-                        </TableCell>
-                        <TableCell className="text-xs sm:text-sm">{crop.price}</TableCell>
-                        <TableCell className="text-xs sm:text-sm">{crop.quantity}</TableCell>
-                        <TableCell>
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              className="text-xs"
-                              onClick={() => setCropReviewModal({ isOpen: true, crop })}
-                            >
-                              <Eye className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('review')}</span>
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="default"
-                              className="text-xs"
-                              onClick={() => handleCropAccept(crop.id)}
-                            >
-                              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('approve')}</span>
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="destructive"
-                              className="text-xs"
-                              onClick={() => handleCropReject(crop.id)}
-                            >
-                              <XCircle className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('reject')}</span>
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
@@ -483,64 +462,58 @@ const AdminDashboard = () => {
         <TabsContent value="pending-orders" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">{t('ordersOnHold')}</CardTitle>
-              <CardDescription className="text-sm">{t('reviewOrdersReleasePayments')}</CardDescription>
+              <CardTitle>{t('ordersOnHold')}</CardTitle>
+              <CardDescription>{t('reviewOrdersReleasePayments')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-xs sm:text-sm">Order #</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('farmer')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('buyer')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">Crop</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('amount')} ({t('currency')})</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('images')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('actions')}</TableHead>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Order #</TableHead>
+                    <TableHead>{t('farmer')}</TableHead>
+                    <TableHead>{t('buyer')}</TableHead>
+                    <TableHead>Crop</TableHead>
+                    <TableHead>{t('amount')} ({t('currency')})</TableHead>
+                    <TableHead>{t('images')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {onHoldOrders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell className="font-medium">{order.orderNumber}</TableCell>
+                      <TableCell>{order.farmer}</TableCell>
+                      <TableCell>{order.buyer}</TableCell>
+                      <TableCell>{order.crop}</TableCell>
+                      <TableCell>{order.amount.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <div>{t('farmer')}: {order.farmerImages} {t('images')}</div>
+                          <div>{t('buyer')}: {order.buyerImages} {t('images')}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="space-x-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setOrderReviewModal({ isOpen: true, order })}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          {t('review')}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={() => handlePaymentRelease(order.id)}
+                        >
+                          <DollarSign className="h-4 w-4 mr-1" />
+                          {t('releasePayment')}
+                        </Button>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {onHoldOrders.map((order) => (
-                      <TableRow key={order.id}>
-                        <TableCell className="font-medium text-xs sm:text-sm">{order.orderNumber}</TableCell>
-                        <TableCell className="text-xs sm:text-sm">{order.farmer}</TableCell>
-                        <TableCell className="text-xs sm:text-sm">{order.buyer}</TableCell>
-                        <TableCell className="text-xs sm:text-sm">{order.crop}</TableCell>
-                        <TableCell className="text-xs sm:text-sm">{order.amount.toLocaleString()}</TableCell>
-                        <TableCell>
-                          <div className="text-xs">
-                            <div>{t('farmer')}: {order.farmerImages} {t('images')}</div>
-                            <div>{t('buyer')}: {order.buyerImages} {t('images')}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              className="text-xs"
-                              onClick={() => setOrderReviewModal({ isOpen: true, order })}
-                            >
-                              <Eye className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('review')}</span>
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="default"
-                              className="text-xs"
-                              onClick={() => handlePaymentRelease(order.id)}
-                            >
-                              <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('releasePayment')}</span>
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
@@ -548,63 +521,57 @@ const AdminDashboard = () => {
         <TabsContent value="withdrawal-requests" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg sm:text-xl">{t('withdrawalRequests')}</CardTitle>
-              <CardDescription className="text-sm">{t('reviewWithdrawalRequests')}</CardDescription>
+              <CardTitle>{t('withdrawalRequests')}</CardTitle>
+              <CardDescription>{t('reviewWithdrawalRequests')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-xs sm:text-sm">{t('user')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('userType')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('amount')} ({t('currency')})</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('requestDate')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('accountDetails')}</TableHead>
-                      <TableHead className="text-xs sm:text-sm">{t('actions')}</TableHead>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t('user')}</TableHead>
+                    <TableHead>{t('userType')}</TableHead>
+                    <TableHead>{t('amount')} ({t('currency')})</TableHead>
+                    <TableHead>{t('requestDate')}</TableHead>
+                    <TableHead>{t('accountDetails')}</TableHead>
+                    <TableHead>{t('actions')}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {withdrawalRequests.map((withdrawal) => (
+                    <TableRow key={withdrawal.id}>
+                      <TableCell className="font-medium">{withdrawal.user}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{withdrawal.userType}</Badge>
+                      </TableCell>
+                      <TableCell>{withdrawal.amount.toLocaleString()}</TableCell>
+                      <TableCell>{withdrawal.requestDate}</TableCell>
+                      <TableCell>
+                        <div className="text-sm text-muted-foreground">
+                          {withdrawal.accountDetails}
+                        </div>
+                      </TableCell>
+                      <TableCell className="space-x-2">
+                        <Button 
+                          size="sm" 
+                          variant="default" 
+                          onClick={() => handleWithdrawalApprove(withdrawal.id)}
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          {t('approve')}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => handleWithdrawalReject(withdrawal.id)}
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          {t('reject')}
+                        </Button>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {withdrawalRequests.map((withdrawal) => (
-                      <TableRow key={withdrawal.id}>
-                        <TableCell className="font-medium text-xs sm:text-sm">{withdrawal.user}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-xs">{withdrawal.userType}</Badge>
-                        </TableCell>
-                        <TableCell className="text-xs sm:text-sm">{withdrawal.amount.toLocaleString()}</TableCell>
-                        <TableCell className="text-xs sm:text-sm">{withdrawal.requestDate}</TableCell>
-                        <TableCell>
-                          <div className="text-xs text-muted-foreground">
-                            {withdrawal.accountDetails}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col sm:flex-row gap-2">
-                            <Button 
-                              size="sm" 
-                              variant="default"
-                              className="text-xs"
-                              onClick={() => handleWithdrawalApprove(withdrawal.id)}
-                            >
-                              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('approve')}</span>
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="destructive"
-                              className="text-xs"
-                              onClick={() => handleWithdrawalReject(withdrawal.id)}
-                            >
-                              <XCircle className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                              <span className="hidden sm:inline">{t('reject')}</span>
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>
