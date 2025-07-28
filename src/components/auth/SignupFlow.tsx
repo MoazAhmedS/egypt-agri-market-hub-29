@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import RoleSelection from "./steps/RoleSelection";
 import BasicInfo from "./steps/BasicInfo";
 import LocationInfo from "./steps/LocationInfo";
@@ -23,6 +24,7 @@ export interface SignupData {
 }
 
 const SignupFlow = ({ onBack, onClose }: SignupFlowProps) => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [signupData, setSignupData] = useState<SignupData>({
     role: "",
@@ -60,8 +62,12 @@ const SignupFlow = ({ onBack, onClose }: SignupFlowProps) => {
 
   const handleComplete = () => {
     console.log("Signup completed:", signupData);
+    // Store email for verification page
+    localStorage.setItem('signupEmail', signupData.email);
     // Here you would typically handle the signup logic
     onClose();
+    // Navigate to email verification page
+    navigate(`/email-verification-sent?email=${encodeURIComponent(signupData.email)}`);
   };
 
   const updateSignupData = (updates: Partial<SignupData>) => {
@@ -85,27 +91,27 @@ const SignupFlow = ({ onBack, onClose }: SignupFlowProps) => {
   return (
     <div className="space-y-6">
       {/* Progress Bar */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-center max-w-md mx-auto">
         {steps.map((step, index) => (
           <div key={index} className="flex items-center">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
               index <= currentStep ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600'
             }`}>
               {index + 1}
             </div>
+            <span className={`mx-2 text-sm font-medium ${
+              index <= currentStep ? 'text-green-600' : 'text-gray-400'
+            }`}>
+              {step.title}
+            </span>
             {index < steps.length - 1 && (
-              <div className={`w-12 h-1 mx-2 ${
+              <div className={`mx-4 h-1 w-20 ${
                 index < currentStep ? 'bg-green-600' : 'bg-gray-200'
               }`} />
             )}
           </div>
         ))}
       </div>
-
-      {/* Step Title */}
-      <h3 className="text-xl font-semibold text-center mb-6">
-        {currentStepData.title}
-      </h3>
 
       {/* Step Content */}
       <StepComponent 

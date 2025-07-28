@@ -58,9 +58,13 @@ const SignupLocation = () => {
 
   const handleNext = () => {
     if (isFormValid()) {
-      // Save to localStorage
-      localStorage.setItem("signupData", JSON.stringify(formData));
-      navigate("/signup/documents");
+      console.log("Signup completed:", formData);
+      // Store email for verification page
+      localStorage.setItem('signupEmail', formData.email);
+      // Clear signup data
+      localStorage.removeItem("signupData");
+      // Navigate to email verification page
+      navigate(`/email-verification-sent?email=${encodeURIComponent(formData.email)}`);
     }
   };
 
@@ -81,7 +85,7 @@ const SignupLocation = () => {
             العودة للرئيسية
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">معلومات الموقع</h2>
-          <p className="text-gray-600 mt-2">الخطوة 3 من 4</p>
+          <p className="text-gray-600 mt-2">الخطوة 3 من 3</p>
         </div>
         
         <Card>
@@ -136,8 +140,7 @@ const SignupLocation = () => {
             disabled={!isFormValid()}
             className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
           >
-            التالي
-            <ArrowRight className="h-4 w-4" />
+            تأكيد التسجيل
           </Button>
         </div>
       </div>
