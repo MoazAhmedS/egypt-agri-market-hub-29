@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CreditCard, Wallet, ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -20,17 +19,12 @@ const TopUp = () => {
   const [amount, setAmount] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   
-  // Billing info state
+  // Simplified billing info state
   const [billingInfo, setBillingInfo] = useState({
+    cardholderName: "",
     cardNumber: "",
     expiryDate: "",
-    cvv: "",
-    cardholderName: "",
-    email: "",
-    address: "",
-    city: "",
-    postalCode: "",
-    country: ""
+    cvv: ""
   });
 
   const predefinedAmounts = [100, 500, 1000, 2000, 5000];
@@ -158,28 +152,15 @@ const TopUp = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleFinalSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="cardholderName">{t('cardholderName') || 'Cardholder Name'}</Label>
-                    <Input
-                      id="cardholderName"
-                      placeholder="John Doe"
-                      value={billingInfo.cardholderName}
-                      onChange={(e) => updateBillingInfo('cardholderName', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">{t('email')}</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="john@example.com"
-                      value={billingInfo.email}
-                      onChange={(e) => updateBillingInfo('email', e.target.value)}
-                      required
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cardholderName">{t('cardholderName') || 'Cardholder Name'}</Label>
+                  <Input
+                    id="cardholderName"
+                    placeholder="John Doe"
+                    value={billingInfo.cardholderName}
+                    onChange={(e) => updateBillingInfo('cardholderName', e.target.value)}
+                    required
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -213,54 +194,6 @@ const TopUp = () => {
                       onChange={(e) => updateBillingInfo('cvv', e.target.value)}
                       required
                     />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="address">{t('address')}</Label>
-                  <Input
-                    id="address"
-                    placeholder="123 Main Street"
-                    value={billingInfo.address}
-                    onChange={(e) => updateBillingInfo('address', e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="city">{t('city')}</Label>
-                    <Input
-                      id="city"
-                      placeholder="New York"
-                      value={billingInfo.city}
-                      onChange={(e) => updateBillingInfo('city', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="postalCode">{t('postalCode')}</Label>
-                    <Input
-                      id="postalCode"
-                      placeholder="10001"
-                      value={billingInfo.postalCode}
-                      onChange={(e) => updateBillingInfo('postalCode', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="country">{t('country') || 'Country'}</Label>
-                    <Select value={billingInfo.country} onValueChange={(value) => updateBillingInfo('country', value)} required>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('selectCountry') || "Select country"} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="us">United States</SelectItem>
-                        <SelectItem value="ca">Canada</SelectItem>
-                        <SelectItem value="uk">United Kingdom</SelectItem>
-                        <SelectItem value="au">Australia</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
 
