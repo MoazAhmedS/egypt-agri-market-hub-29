@@ -39,13 +39,13 @@ const CheckoutProcess = () => {
 
   const handleNextStep = () => {
     if (currentStep === 1) {
-      setCurrentStep(4); // Skip to step 4
+      setCurrentStep(2);
     }
   };
 
   const handlePrevStep = () => {
-    if (currentStep === 4) {
-      setCurrentStep(1); // Go back to step 1
+    if (currentStep === 2) {
+      setCurrentStep(1);
     }
   };
 
@@ -69,7 +69,7 @@ const CheckoutProcess = () => {
 
   const steps = [
     { number: 1, title: t('orderInformation') },
-    { number: 4, title: t('orderConfirmation') }
+    { number: 2, title: t('orderConfirmation') }
   ];
 
   return (
@@ -151,8 +151,8 @@ const CheckoutProcess = () => {
                   </div>
                 )}
 
-                {/* Step 4: Order Confirmation */}
-                {currentStep === 4 && (
+                {/* Step 2: Order Confirmation */}
+                {currentStep === 2 && (
                   <div className="space-y-6">
                     <div className="space-y-4">
                       <h3 className="font-semibold text-lg">{t('orderSummary')}</h3>

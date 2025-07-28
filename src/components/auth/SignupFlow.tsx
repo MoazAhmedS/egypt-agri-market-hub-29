@@ -130,7 +130,7 @@ const SignupFlow = ({ onBack, onClose }: SignupFlowProps) => {
             disabled={!isStepValid()}
             className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
           >
-            إنهاء التسجيل
+            تأكيد التسجيل
           </Button>
         ) : (
           <Button
