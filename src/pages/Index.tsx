@@ -33,6 +33,9 @@ const Index = () => {
       farmer: "Farmer",
       buyer: "Buyer/Wholesaler",
       register: "Register Now",
+      currency: "EGP",
+      perKg: "/kg",
+      quantity: "kg available",
       footer: {
         about: "About",
         contact: "Contact", 
@@ -58,6 +61,9 @@ const Index = () => {
       farmer: "مزارع",
       buyer: "مشتري/تاجر جملة",
       register: "سجل الآن",
+      currency: "جنيه",
+      perKg: "/كيلو",
+      quantity: "كيلو متوفر",
       footer: {
         about: "عن الشركة",
         contact: "اتصل بنا",
@@ -73,29 +79,45 @@ const Index = () => {
     {
       id: 1,
       name: isArabic ? "طماطم طازجة" : "Fresh Tomatoes",
-      price: isArabic ? "٢٥ جنيه/كيلو" : "25 EGP/kg",
+      nameEn: "Fresh Tomatoes",
+      price: 25,
       governorate: isArabic ? "الإسكندرية" : "Alexandria",
+      farmer: isArabic ? "أحمد محمد" : "Ahmed Mohamed",
+      farmerEn: "Ahmed Mohamed",
+      quantity: 500,
       image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=300&fit=crop"
     },
     {
       id: 2,
       name: isArabic ? "بطاطس مصرية" : "Egyptian Potatoes",
-      price: isArabic ? "١٨ جنيه/كيلو" : "18 EGP/kg",
+      nameEn: "Egyptian Potatoes",
+      price: 18,
       governorate: isArabic ? "المنوفية" : "Menoufia",
+      farmer: isArabic ? "محمود علي" : "Mahmoud Ali",
+      farmerEn: "Mahmoud Ali",
+      quantity: 300,
       image: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=400&h=300&fit=crop"
     },
     {
       id: 3,
       name: isArabic ? "جزر عضوي" : "Organic Carrots",
-      price: isArabic ? "٣٠ جنيه/كيلو" : "30 EGP/kg",
+      nameEn: "Organic Carrots",
+      price: 30,
       governorate: isArabic ? "الفيوم" : "Fayoum",
+      farmer: isArabic ? "فاطمة حسن" : "Fatma Hassan",
+      farmerEn: "Fatma Hassan",
+      quantity: 200,
       image: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400&h=300&fit=crop"
     },
     {
       id: 4,
       name: isArabic ? "بصل أحمر" : "Red Onions",
-      price: isArabic ? "٢٢ جنيه/كيلو" : "22 EGP/kg",
+      nameEn: "Red Onions",
+      price: 22,
       governorate: isArabic ? "البحيرة" : "Beheira",
+      farmer: isArabic ? "سعد إبراهيم" : "Saad Ibrahim",
+      farmerEn: "Saad Ibrahim",
+      quantity: 400,
       image: "https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=400&h=300&fit=crop"
     }
   ];
@@ -138,25 +160,41 @@ const Index = () => {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             {localT.latestProducts}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {sampleProducts.map((product) => (
-              <Card key={product.id} className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden">
-                <div className="aspect-w-16 aspect-h-12">
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-full h-48 object-cover"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-lg text-gray-900 mb-2">{product.name}</h3>
-                  <p className="text-green-600 font-bold text-xl mb-1">{product.price}</p>
-                  <p className="text-gray-600 text-sm mb-4">{product.governorate}</p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
-                    {localT.buyNow}
-                  </Button>
-                </CardContent>
-              </Card>
+              <Link key={product.id} to={`/product/${product.id}`}>
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="aspect-video relative overflow-hidden rounded-t-lg">
+                    <img 
+                      src={product.image} 
+                      alt={language === 'ar' ? product.name : product.nameEn}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-lg mb-2">
+                      {language === 'ar' ? product.name : product.nameEn}
+                    </h3>
+                    <p className="text-gray-600 mb-2">
+                      {language === 'ar' ? product.farmer : product.farmerEn}
+                    </p>
+                    <p className="text-gray-600 mb-2">
+                      {product.governorate}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-2xl font-bold text-green-600">
+                        {product.price} {localT.currency}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {localT.perKg}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {product.quantity} {localT.quantity}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
@@ -168,28 +206,44 @@ const Index = () => {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             {localT.topProducts}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {topProducts.map((product) => (
-              <Card key={`top-${product.id}`} className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden relative">
-                <div className="absolute top-2 right-2 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold z-10">
-                  {isArabic ? "الأفضل" : "TOP"}
-                </div>
-                <div className="aspect-w-16 aspect-h-12">
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-full h-48 object-cover"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-lg text-gray-900 mb-2">{product.name}</h3>
-                  <p className="text-green-600 font-bold text-xl mb-1">{product.price}</p>
-                  <p className="text-gray-600 text-sm mb-4">{product.governorate}</p>
-                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
-                    {localT.buyNow}
-                  </Button>
-                </CardContent>
-              </Card>
+              <Link key={`top-${product.id}`} to={`/product/${product.id}`}>
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer relative">
+                  <div className="absolute top-2 right-2 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold z-10">
+                    {isArabic ? "الأفضل" : "TOP"}
+                  </div>
+                  <div className="aspect-video relative overflow-hidden rounded-t-lg">
+                    <img 
+                      src={product.image} 
+                      alt={language === 'ar' ? product.name : product.nameEn}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-lg mb-2">
+                      {language === 'ar' ? product.name : product.nameEn}
+                    </h3>
+                    <p className="text-gray-600 mb-2">
+                      {language === 'ar' ? product.farmer : product.farmerEn}
+                    </p>
+                    <p className="text-gray-600 mb-2">
+                      {product.governorate}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-2xl font-bold text-green-600">
+                        {product.price} {localT.currency}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {localT.perKg}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {product.quantity} {localT.quantity}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
