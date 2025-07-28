@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -130,124 +131,61 @@ const BuyerDashboard = () => {
   const pendingOrders = orders.filter(o => o.status === 'pending').length;
   const deliveredOrders = orders.filter(o => o.status === 'delivered').length;
 
-  // Purchase analytics by category
-  const purchasesByCategory = [
-    { category: 'Vegetables', amount: 2000, orders: 8 },
-    { category: 'Fruits', amount: 1500, orders: 5 },
-    { category: 'Grains', amount: 1600, orders: 3 },
-  ];
-
-  const topFarmers = [
-    { name: 'Ahmed Hassan', totalOrders: 5, totalAmount: 2100 },
-    { name: 'Omar Ali', totalOrders: 3, totalAmount: 1800 },
-    { name: 'Mohamed Ibrahim', totalOrders: 2, totalAmount: 1600 },
-  ];
-
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">{t('purchaseAnalytics')}</TabsTrigger>
+      {/* Purchase Analytics - Static at top */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{t('currency')} {totalSpent}</div>
+            <p className="text-xs text-muted-foreground">All time</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalOrders}</div>
+            <p className="text-xs text-muted-foreground">All time</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{t('pendingOrders')}</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{pendingOrders}</div>
+            <p className="text-xs text-muted-foreground">Awaiting processing</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Delivered Orders</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{deliveredOrders}</div>
+            <p className="text-xs text-muted-foreground">Completed</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="orders" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="orders">{t('orderHistory')}</TabsTrigger>
           <TabsTrigger value="wallet">{t('wallet')}</TabsTrigger>
           <TabsTrigger value="profile">{t('profileManagement')}</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          {/* Analytics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{t('currency')} {totalSpent}</div>
-                <p className="text-xs text-muted-foreground">All time</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalOrders}</div>
-                <p className="text-xs text-muted-foreground">All time</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t('pendingOrders')}</CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{pendingOrders}</div>
-                <p className="text-xs text-muted-foreground">Awaiting processing</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Delivered Orders</CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{deliveredOrders}</div>
-                <p className="text-xs text-muted-foreground">Completed</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Purchase Analytics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Purchases by Category</CardTitle>
-                <CardDescription>Your spending breakdown by crop category</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {purchasesByCategory.map((category) => (
-                    <div key={category.category} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">{category.category}</p>
-                        <p className="text-sm text-gray-600">{category.orders} orders</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold">{t('currency')} {category.amount}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Top Farmers</CardTitle>
-                <CardDescription>Farmers you've ordered from most</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {topFarmers.map((farmer) => (
-                    <div key={farmer.name} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">{farmer.name}</p>
-                        <p className="text-sm text-gray-600">{farmer.totalOrders} orders</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold">{t('currency')} {farmer.totalAmount}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
 
         <TabsContent value="orders" className="space-y-4">
           <Card>
@@ -418,12 +356,12 @@ const BuyerDashboard = () => {
                   <p className="text-lg">Fatma Ahmed</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">{t('email')}</label>
-                  <p className="text-lg">fatma@example.com</p>
-                </div>
-                <div>
                   <label className="text-sm font-medium">{t('location')}</label>
                   <p className="text-lg">Cairo, Egypt</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Address</label>
+                  <p className="text-lg">123 Street, Cairo</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium">Phone</label>
