@@ -4,12 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Header from "@/components/Header";
 
-// Mock data for products
+// Mock data for products - expanded with more items for pagination demo
 const mockProducts = [
   {
     id: 1,
@@ -59,6 +60,102 @@ const mockProducts = [
     quantity: 1000,
     image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
   },
+  {
+    id: 5,
+    name: "جزر طازج",
+    nameEn: "Fresh Carrots",
+    type: "vegetables",
+    price: 10,
+    governorate: "cairo",
+    farmer: "مريم أحمد",
+    farmerEn: "Maryam Ahmed",
+    quantity: 400,
+    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+  },
+  {
+    id: 6,
+    name: "تفاح أحمر",
+    nameEn: "Red Apples",
+    type: "fruits",
+    price: 25,
+    governorate: "giza",
+    farmer: "خالد حسن",
+    farmerEn: "Khaled Hassan",
+    quantity: 150,
+    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+  },
+  {
+    id: 7,
+    name: "أرز بسمتي",
+    nameEn: "Basmati Rice",
+    type: "grains",
+    price: 18,
+    governorate: "dakahlia",
+    farmer: "نور الدين",
+    farmerEn: "Nour Al-Din",
+    quantity: 800,
+    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+  },
+  {
+    id: 8,
+    name: "فلفل أخضر",
+    nameEn: "Green Peppers",
+    type: "vegetables",
+    price: 14,
+    governorate: "alexandria",
+    farmer: "سارة محمد",
+    farmerEn: "Sara Mohamed",
+    quantity: 250,
+    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+  },
+  {
+    id: 9,
+    name: "موز طازج",
+    nameEn: "Fresh Bananas",
+    type: "fruits",
+    price: 22,
+    governorate: "sharqia",
+    farmer: "عمر علي",
+    farmerEn: "Omar Ali",
+    quantity: 180,
+    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+  },
+  {
+    id: 10,
+    name: "بقدونس",
+    nameEn: "Parsley",
+    type: "herbs",
+    price: 8,
+    governorate: "cairo",
+    farmer: "هبة أحمد",
+    farmerEn: "Heba Ahmed",
+    quantity: 100,
+    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+  },
+  {
+    id: 11,
+    name: "خس طازج",
+    nameEn: "Fresh Lettuce",
+    type: "vegetables",
+    price: 12,
+    governorate: "giza",
+    farmer: "طارق محمود",
+    farmerEn: "Tarek Mahmoud",
+    quantity: 300,
+    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+  },
+  {
+    id: 12,
+    name: "عنب أحمر",
+    nameEn: "Red Grapes",
+    type: "fruits",
+    price: 30,
+    governorate: "alexandria",
+    farmer: "رانيا حسن",
+    farmerEn: "Rania Hassan",
+    quantity: 120,
+    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+  },
 ];
 
 const governorates = [
@@ -82,6 +179,8 @@ const BrowseProducts = () => {
   const [selectedGovernorate, setSelectedGovernorate] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   const filteredProducts = useMemo(() => {
     return mockProducts.filter((product) => {
@@ -95,11 +194,42 @@ const BrowseProducts = () => {
     });
   }, [searchTerm, selectedGovernorate, selectedType, maxPrice, language]);
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedGovernorate("all");
     setSelectedType("all");
     setMaxPrice("");
+    setCurrentPage(1);
+  };
+
+  // Reset pagination when filters change
+  const handleFilterChange = (filterType: string, value: string) => {
+    setCurrentPage(1);
+    switch (filterType) {
+      case 'search':
+        setSearchTerm(value);
+        break;
+      case 'governorate':
+        setSelectedGovernorate(value);
+        break;
+      case 'type':
+        setSelectedType(value);
+        break;
+      case 'maxPrice':
+        setMaxPrice(value);
+        break;
+    }
   };
 
   return (
@@ -119,13 +249,13 @@ const BrowseProducts = () => {
                   type="text"
                   placeholder={t('searchPlaceholder')}
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => handleFilterChange('search', e.target.value)}
                   className="pl-10"
                 />
               </div>
             </div>
             
-            <Select value={selectedGovernorate} onValueChange={setSelectedGovernorate}>
+            <Select value={selectedGovernorate} onValueChange={(value) => handleFilterChange('governorate', value)}>
               <SelectTrigger>
                 <SelectValue placeholder={t('governorate')} />
               </SelectTrigger>
@@ -139,7 +269,7 @@ const BrowseProducts = () => {
               </SelectContent>
             </Select>
 
-            <Select value={selectedType} onValueChange={setSelectedType}>
+            <Select value={selectedType} onValueChange={(value) => handleFilterChange('type', value)}>
               <SelectTrigger>
                 <SelectValue placeholder={t('productType')} />
               </SelectTrigger>
@@ -158,7 +288,7 @@ const BrowseProducts = () => {
                 type="number"
                 placeholder={t('maxPrice')}
                 value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
+                onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
               />
               <Button onClick={clearFilters} variant="outline">
                 {t('clear')}
@@ -169,7 +299,7 @@ const BrowseProducts = () => {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
+          {currentProducts.map((product) => (
             <Link key={product.id} to={`/product/${product.id}`}>
               <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <div className="aspect-video relative overflow-hidden rounded-t-lg">
@@ -209,6 +339,41 @@ const BrowseProducts = () => {
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">{t('noResults')}</p>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-8">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      onClick={() => handlePageChange(page)}
+                      isActive={currentPage === page}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         )}
       </div>

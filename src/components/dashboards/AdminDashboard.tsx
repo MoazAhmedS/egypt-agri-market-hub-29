@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { 
   Users, 
   ShoppingCart, 
@@ -39,6 +40,10 @@ const AdminDashboard = () => {
   // Search and filter states
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
+  
+  // Pagination state for user management
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Mock data - in real app this would come from API
   const [pendingUsers, setPendingUsers] = useState([
@@ -53,6 +58,16 @@ const AdminDashboard = () => {
     { id: 3, name: "Khaled Salem", email: "khaled@example.com", role: "Farmer", status: "banned", joinDate: "2024-01-20" },
     { id: 4, name: "Sara Mohamed", email: "sara@example.com", role: "Buyer", status: "active", joinDate: "2024-01-25" },
     { id: 5, name: "Ahmed Hassan", email: "ahmed@example.com", role: "Farmer", status: "active", joinDate: "2024-02-01" },
+    { id: 6, name: "Layla Ali", email: "layla@example.com", role: "Buyer", status: "active", joinDate: "2024-02-05" },
+    { id: 7, name: "Youssef Omar", email: "youssef@example.com", role: "Farmer", status: "active", joinDate: "2024-02-08" },
+    { id: 8, name: "Nour Hassan", email: "nour@example.com", role: "Buyer", status: "banned", joinDate: "2024-02-12" },
+    { id: 9, name: "Amr Mahmoud", email: "amr@example.com", role: "Farmer", status: "active", joinDate: "2024-02-15" },
+    { id: 10, name: "Rana Ahmed", email: "rana@example.com", role: "Buyer", status: "active", joinDate: "2024-02-18" },
+    { id: 11, name: "Tarek Ali", email: "tarek@example.com", role: "Farmer", status: "active", joinDate: "2024-02-20" },
+    { id: 12, name: "Heba Mohamed", email: "heba@example.com", role: "Buyer", status: "active", joinDate: "2024-02-22" },
+    { id: 13, name: "Karim Hassan", email: "karim@example.com", role: "Farmer", status: "active", joinDate: "2024-02-25" },
+    { id: 14, name: "Mona Omar", email: "mona@example.com", role: "Buyer", status: "banned", joinDate: "2024-02-28" },
+    { id: 15, name: "Mustafa Ali", email: "mustafa@example.com", role: "Farmer", status: "active", joinDate: "2024-03-01" },
   ]);
 
   const [pendingCrops, setPendingCrops] = useState([
@@ -131,6 +146,27 @@ const AdminDashboard = () => {
     const matchesRole = roleFilter === "all" || user.role === roleFilter;
     return matchesSearch && matchesRole;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentUsers = filteredUsers.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Reset pagination when filters change
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  const handleRoleFilterChange = (value: string) => {
+    setRoleFilter(value);
+    setCurrentPage(1);
+  };
 
   // Handler functions
   const handleUserApprove = (userId: number) => {
@@ -317,11 +353,11 @@ const AdminDashboard = () => {
                   <Input
                     placeholder="Search by name or email..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => handleSearchChange(e.target.value)}
                     className="pl-10"
                   />
                 </div>
-                <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <Select value={roleFilter} onValueChange={handleRoleFilterChange}>
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="Filter by role" />
                   </SelectTrigger>
@@ -345,14 +381,14 @@ const AdminDashboard = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredUsers.length === 0 ? (
+                  {currentUsers.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={6} className="text-center text-muted-foreground">
                         No users found
                       </TableCell>
                     </TableRow>
                   ) : (
-                    filteredUsers.map((user) => (
+                    currentUsers.map((user) => (
                       <TableRow key={user.id}>
                         <TableCell className="font-medium">{user.name}</TableCell>
                         <TableCell>{user.email}</TableCell>
@@ -393,6 +429,41 @@ const AdminDashboard = () => {
                   )}
                 </TableBody>
               </Table>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-6">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious 
+                          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                          className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                        />
+                      </PaginationItem>
+                      
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            onClick={() => handlePageChange(page)}
+                            isActive={currentPage === page}
+                            className="cursor-pointer"
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      
+                      <PaginationItem>
+                        <PaginationNext 
+                          onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
