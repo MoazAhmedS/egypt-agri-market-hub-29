@@ -1,11 +1,9 @@
-
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Badge } from "@/components/ui/badge";
 import { Search, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -321,19 +319,11 @@ const BrowseProducts = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {currentProducts.map((product) => (
             <Link key={product.id} to={`/product/${product.id}`}>
-              <Card className={`hover:shadow-lg transition-all cursor-pointer relative ${
+              <Card className={`hover:shadow-lg transition-all cursor-pointer ${
                 product.isPremium 
                   ? 'ring-2 ring-yellow-300 shadow-lg bg-gradient-to-br from-white to-yellow-50' 
                   : ''
               }`}>
-                {product.isPremium && (
-                  <div className="absolute -top-2 -right-2 z-10">
-                    <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-yellow-900 shadow-lg">
-                      <Crown className="w-3 h-3 mr-1" />
-                      Premium
-                    </Badge>
-                  </div>
-                )}
                 <div className="aspect-video relative overflow-hidden rounded-t-lg">
                   <img 
                     src={product.image} 
