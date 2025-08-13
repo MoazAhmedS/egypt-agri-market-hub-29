@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -326,14 +325,6 @@ const BrowseProducts = () => {
                   ? 'ring-2 ring-yellow-300 shadow-lg bg-gradient-to-br from-white to-yellow-50' 
                   : ''
               }`}>
-                {product.isPremium && (
-                  <div className="absolute -top-2 -right-2 z-10">
-                    <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-yellow-900 shadow-lg">
-                      <Crown className="w-3 h-3 mr-1" />
-                      Premium
-                    </Badge>
-                  </div>
-                )}
                 <div className="aspect-video relative overflow-hidden rounded-t-lg">
                   <img 
                     src={product.image} 
