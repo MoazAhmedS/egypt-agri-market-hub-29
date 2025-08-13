@@ -11,6 +11,7 @@ import AddCropModal from "@/components/modals/AddCropModal";
 import ShipOrderModal from "@/components/modals/ShipOrderModal";
 import ProfileModal from "@/components/modals/ProfileModal";
 import WithdrawModal from "@/components/modals/WithdrawModal";
+import PremiumAnalysisAlert from "@/components/PremiumAnalysisAlert";
 import { Link } from "react-router-dom";
 
 interface Crop {
@@ -54,7 +55,8 @@ const FarmerDashboard = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   
   // Subscription state (mock data)
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(true);
+  const [subscriptionTier] = useState("Premium");
   
   // Wallet state
   const [walletBalance, setWalletBalance] = useState(2580.50);
@@ -146,6 +148,12 @@ const FarmerDashboard = () => {
 
   return (
     <div className="space-y-6">
+      {/* Premium Analysis Alert - Show when subscribed */}
+      <PremiumAnalysisAlert 
+        isSubscribed={isSubscribed} 
+        subscriptionTier={subscriptionTier}
+      />
+
       {/* Sales Analytics - Always visible at top */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
