@@ -5,12 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Search } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Header from "@/components/Header";
 
-// Mock data for products - expanded with more items for pagination demo
+// Mock data for products - expanded with premium status
 const mockProducts = [
   {
     id: 1,
@@ -23,6 +24,7 @@ const mockProducts = [
     farmerEn: "Ahmed Mohamed",
     quantity: 500,
     image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+    isPremium: true,
   },
   {
     id: 2,
@@ -35,6 +37,7 @@ const mockProducts = [
     farmerEn: "Mahmoud Ali",
     quantity: 300,
     image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+    isPremium: false,
   },
   {
     id: 3,
@@ -47,6 +50,7 @@ const mockProducts = [
     farmerEn: "Fatma Hassan",
     quantity: 200,
     image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+    isPremium: true,
   },
   {
     id: 4,
@@ -59,6 +63,7 @@ const mockProducts = [
     farmerEn: "Saad Ibrahim",
     quantity: 1000,
     image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+    isPremium: false,
   },
   {
     id: 5,
@@ -71,6 +76,7 @@ const mockProducts = [
     farmerEn: "Maryam Ahmed",
     quantity: 400,
     image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+    isPremium: true,
   },
   {
     id: 6,
@@ -83,6 +89,7 @@ const mockProducts = [
     farmerEn: "Khaled Hassan",
     quantity: 150,
     image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+    isPremium: false,
   },
   {
     id: 7,
@@ -95,6 +102,7 @@ const mockProducts = [
     farmerEn: "Nour Al-Din",
     quantity: 800,
     image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+    isPremium: true,
   },
   {
     id: 8,
@@ -107,6 +115,7 @@ const mockProducts = [
     farmerEn: "Sara Mohamed",
     quantity: 250,
     image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+    isPremium: false,
   },
   {
     id: 9,
@@ -119,6 +128,7 @@ const mockProducts = [
     farmerEn: "Omar Ali",
     quantity: 180,
     image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+    isPremium: false,
   },
   {
     id: 10,
@@ -131,6 +141,7 @@ const mockProducts = [
     farmerEn: "Heba Ahmed",
     quantity: 100,
     image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+    isPremium: false,
   },
   {
     id: 11,
@@ -143,6 +154,7 @@ const mockProducts = [
     farmerEn: "Tarek Mahmoud",
     quantity: 300,
     image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=300&h=200&fit=crop",
+    isPremium: false,
   },
   {
     id: 12,
@@ -155,6 +167,7 @@ const mockProducts = [
     farmerEn: "Rania Hassan",
     quantity: 120,
     image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300&h=200&fit=crop",
+    isPremium: true,
   },
 ];
 
@@ -183,7 +196,7 @@ const BrowseProducts = () => {
   const itemsPerPage = 8;
 
   const filteredProducts = useMemo(() => {
-    return mockProducts.filter((product) => {
+    const filtered = mockProducts.filter((product) => {
       const productName = language === 'ar' ? product.name : product.nameEn;
       const matchesSearch = productName.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesGovernorate = selectedGovernorate === "all" || product.governorate === selectedGovernorate;
@@ -191,6 +204,13 @@ const BrowseProducts = () => {
       const matchesPrice = !maxPrice || product.price <= parseInt(maxPrice);
       
       return matchesSearch && matchesGovernorate && matchesType && matchesPrice;
+    });
+
+    // Sort products: Premium farmers first, then regular farmers
+    return filtered.sort((a, b) => {
+      if (a.isPremium && !b.isPremium) return -1;
+      if (!a.isPremium && b.isPremium) return 1;
+      return 0;
     });
   }, [searchTerm, selectedGovernorate, selectedType, maxPrice, language]);
 
@@ -301,26 +321,53 @@ const BrowseProducts = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {currentProducts.map((product) => (
             <Link key={product.id} to={`/product/${product.id}`}>
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <Card className={`hover:shadow-lg transition-all cursor-pointer relative ${
+                product.isPremium 
+                  ? 'ring-2 ring-yellow-300 shadow-lg bg-gradient-to-br from-white to-yellow-50' 
+                  : ''
+              }`}>
+                {product.isPremium && (
+                  <div className="absolute -top-2 -right-2 z-10">
+                    <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-yellow-900 shadow-lg">
+                      <Crown className="w-3 h-3 mr-1" />
+                      Premium
+                    </Badge>
+                  </div>
+                )}
                 <div className="aspect-video relative overflow-hidden rounded-t-lg">
                   <img 
                     src={product.image} 
                     alt={language === 'ar' ? product.name : product.nameEn}
                     className="w-full h-full object-cover"
                   />
+                  {product.isPremium && (
+                    <div className="absolute top-2 left-2">
+                      <div className="bg-yellow-400/90 text-yellow-900 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                        <Crown className="w-3 h-3" />
+                        Verified
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <CardContent className="p-4">
                   <h3 className="font-semibold text-lg mb-2">
                     {language === 'ar' ? product.name : product.nameEn}
                   </h3>
-                  <p className="text-gray-600 mb-2">
-                    {language === 'ar' ? product.farmer : product.farmerEn}
-                  </p>
+                  <div className="flex items-center gap-2 mb-2">
+                    <p className="text-gray-600">
+                      {language === 'ar' ? product.farmer : product.farmerEn}
+                    </p>
+                    {product.isPremium && (
+                      <Crown className="w-4 h-4 text-yellow-600" />
+                    )}
+                  </div>
                   <p className="text-gray-600 mb-2">
                     {t(product.governorate)}
                   </p>
                   <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold text-green-600">
+                    <span className={`text-2xl font-bold ${
+                      product.isPremium ? 'text-yellow-600' : 'text-green-600'
+                    }`}>
                       {product.price} {t('currency')}
                     </span>
                     <span className="text-sm text-gray-500">
